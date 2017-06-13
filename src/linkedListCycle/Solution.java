@@ -22,4 +22,13 @@ public class Solution {
         }
         return false;
     }
+	public static void main(String[] args) {
+		int count = 0;
+		char[] chs = Integer.toBinaryString(-13).toCharArray();
+		for(int i = 0;i < chs.length; i++){
+			if (chs[i] == '1')
+				count += 1;
+		}
+		System.out.println("count"+count);
+	}
 }

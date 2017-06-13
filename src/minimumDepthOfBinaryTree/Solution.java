@@ -10,7 +10,7 @@ public class Solution {
 		TreeNode right;
 		TreeNode(int x) { val = x; }
 	 }
-	
+	//记录二叉树的最小深度
 	public int run(TreeNode root) {
 	       if (root == null)
 	           return 0;
