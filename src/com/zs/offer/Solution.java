@@ -204,6 +204,39 @@ public class Solution {
 		return GetLastOfK(array, k, start, end);
 	}
 	
+	/**
+	 * 删除链表重复的节点
+	 */
+	public static ListNode deleteDuplication(ListNode pHead){
+		if(pHead == null)
+            return null;
+        ListNode helper = new ListNode(0);
+        helper.next = pHead;
+        ListNode pre = helper;
+        boolean flag = false;
+        while(pHead != null){
+            ListNode pNext = pHead.next;
+            if(pNext == null) break;
+            if(pHead.val == pNext.val){
+                while(pNext != null && pHead.val == pNext.val)
+                    pNext = pNext.next;
+                pre.next = pNext;
+                pHead = pNext;
+                System.out.println(helper.next);
+                System.out.println(pre.next);
+            }
+            else{
+                if(!flag){
+                    helper.next = pHead;
+                    flag = true;
+                }
+                pre = pHead;
+                pHead = pNext;
+            }
+        }
+        return helper.next;
+    }
+	
 	 
 	public static void main(String[] args) {
 //		System.out.println(NumberOf1Between1AndN_Solution(12));
@@ -235,9 +268,33 @@ public class Solution {
 //		a4.next = a5;
 //		ListNode listNode = FindFirstCommonNode(l1, a1);
 //		System.out.println(listNode.val);
-		int[] array = new int[]{1,3,3,3,3,4,5};
-		System.out.println(GetLastOfK(array, 2, 0, array.length-1));
-		System.out.println(GetFirstOfK(array, 2, 0, array.length-1));
+//		int[] array = new int[]{1,3,3,3,3,4,5};
+//		System.out.println(GetLastOfK(array, 2, 0, array.length-1));
+//		System.out.println(GetFirstOfK(array, 2, 0, array.length-1));
 		//System.out.println(GetNumberOfK(array, 3));
+		
+//		ListNode l1 = new ListNode(2);
+//		ListNode l2 = new ListNode(2);
+//		ListNode l3 = new ListNode(3);
+//		ListNode l4 = new ListNode(3);
+//		ListNode l5 = new ListNode(4);
+//		ListNode l6 = new ListNode(5);
+//		l1.next = l2;
+//		l2.next = l3;
+//		l3.next = l4;
+//		l4.next = l5;
+//		l5.next = l6;
+//		ListNode head = deleteDuplication(l1);
+//		while(head!=null){
+//			System.out.println(head.val);
+//			head = head.next;
+//		}
+		StringBuffer aBuffer = new StringBuffer("abc");
+		StringBuffer bBuffer = aBuffer;
+		bBuffer.append("12");
+		StringBuffer cBuffer = new StringBuffer("def");
+		bBuffer = cBuffer;
+		System.out.println(aBuffer.toString());
+		System.out.println(bBuffer.toString());
 	}
 }
