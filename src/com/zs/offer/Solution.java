@@ -1,6 +1,7 @@
 package com.zs.offer;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -10,6 +11,7 @@ import java.util.Map.Entry;
 import java.util.Stack;
 
 import dataStructure.ListNode;
+import dataStructure.TreeNode;
 
 
 public class Solution {
@@ -237,6 +239,113 @@ public class Solution {
         return helper.next;
     }
 	
+	/**
+	 * 用位运算实现两数相加
+	 */
+	public static int Add(int num1,int num2) {
+        int sum,temp;
+        do{
+            sum = num1^num2;
+            temp = (num1&num2)<<1;
+            num1 = sum;
+            num2 = temp;
+        }
+        while(num2 != 0);
+        return sum;
+    }
+	
+	/**
+	 * 判断一个数组是否为二叉搜索树后序遍历的结果
+	 */
+	public static boolean VerifySquenceOfBST(int [] sequence) {
+        if(sequence == null || sequence.length < 1)
+        	return false;
+        return VerifySquenceOfSUBBST(sequence, 0, sequence.length-1);
+    }
+	
+	public static boolean VerifySquenceOfSUBBST(int [] sequence, int start, int end){
+//		if(end <= start)
+//			return true;
+        int i = start;
+        int root = sequence[end];   //根节点的大小是数组中的最后一个元素
+        // 从数组开始找到左子树最后一个索引的下一个，即右子树的第一个索引
+        for(; i<end; i++){
+            if(sequence[i] > root)
+                break;
+        }
+        int j = i;
+        //如果右子树有小于根节点大小的数存在，则不是二叉搜索树后序遍历的结果，返回false
+        for(; j<end; j++){
+            if(sequence[j] < root)
+                return false;
+        }
+        //判断左子树是否满足
+        boolean left = true;
+        if(i > start)
+        	left = VerifySquenceOfSUBBST(sequence, start,i-1);
+        //判断右子树是否满足
+        boolean right = true;
+        if(i < end-1)
+        	right = VerifySquenceOfSUBBST(sequence, i, end-1);
+        return left&&right;
+	}
+	
+	/**
+	 * 根据前序遍历和中序遍历重建二叉树
+	 */
+	 public static TreeNode reConstructBinaryTree(int [] pre,int [] in) {
+		if(pre.length == 0 || in.length ==0)
+			 return null;
+	    return reConstructSUBBinaryTree(0, pre.length-1, pre, 0, in.length-1, in);
+	 }
+	 
+	 private static TreeNode reConstructSUBBinaryTree(int startPre, int endPre, int[] pre, int startIn, int endIn, int[] in){
+		 if(startPre > endPre || startIn > endIn)
+			 return null;
+		 TreeNode root = new TreeNode(pre[startPre]);
+		 for(int i = startIn; i<endIn; i++){
+			 //中序遍历的数组中的值等于前序遍历数组首个大小
+			 if(in[i] == root.val){
+				 root.left = reConstructSUBBinaryTree(startPre+1, startPre+i-startIn, pre, startIn, i-1, in);
+				 root.right = reConstructSUBBinaryTree(startPre+i-startIn+1, endPre, pre, i+1, endIn, in);
+			 }
+		 }
+		 return root;
+	 }
+	 
+	 /**
+	  * 二叉搜索树根据中序遍历建立二叉搜索树
+	  */
+	 public static TreeNode Convert(TreeNode pRootOfTree) {
+	        if(pRootOfTree == null)
+	            return null;
+	        Stack<TreeNode> stack = new Stack<>();
+	        TreeNode p = pRootOfTree;  //记录前一个节点
+	        TreeNode pre = null;
+	        boolean flag = false;
+	        while(p != null || !stack.isEmpty()){
+	            //把当前根节点的左子节点一层层压入栈中
+	            while(p != null){
+	                stack.push(p);
+	                p = p.left;
+	            }
+	            p = stack.pop();
+	            if(!flag){
+	                pRootOfTree = p;  //中序遍历的第一个节点,只进来一次
+	                pre = p;
+	                flag = true;
+	            }
+	            else{
+	                //左子树需要建立right,右子树需要建立left
+	                pre.right = p;
+	                p.left = pre;
+	                pre = p;
+	            }
+	            p = p.right;
+	        }
+	        return pRootOfTree;
+	    }
+	
 	 
 	public static void main(String[] args) {
 //		System.out.println(NumberOf1Between1AndN_Solution(12));
@@ -289,12 +398,12 @@ public class Solution {
 //			System.out.println(head.val);
 //			head = head.next;
 //		}
-		StringBuffer aBuffer = new StringBuffer("abc");
-		StringBuffer bBuffer = aBuffer;
-		bBuffer.append("12");
-		StringBuffer cBuffer = new StringBuffer("def");
-		bBuffer = cBuffer;
-		System.out.println(aBuffer.toString());
-		System.out.println(bBuffer.toString());
+//		String a = "12e";
+//		boolean flag = a.matches("[+-]?[0-9]*(\\.[0-9]+)?([eE][+-]?[0-9]+)?");
+//		System.out.println(flag);
+		
+		int[] a = new int[]{5,7,6,9,11,10,8};
+		System.out.println(VerifySquenceOfBST(a));
+        
 	}
 }
