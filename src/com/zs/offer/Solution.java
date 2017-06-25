@@ -11,10 +11,12 @@ import java.util.Map.Entry;
 import java.util.Stack;
 
 import dataStructure.ListNode;
+import dataStructure.TreeLinkNode;
 import dataStructure.TreeNode;
 
 
 public class Solution {
+	
 	/**
 	 * 找出1-n中1出现的数量
 	 */
@@ -108,6 +110,9 @@ public class Solution {
         return 0;
     }
 	
+	/**
+	 * 两个链表找到第一个相同的节点
+	 */
 	 public static ListNode FindFirstCommonNode(ListNode pHead1, ListNode pHead2) {
 		 if(pHead1 == null || pHead2 == null)
 	            return null;
@@ -346,64 +351,59 @@ public class Solution {
 	        return pRootOfTree;
 	    }
 	
+	 /**
+	  * 扑克牌顺子
+	  */
+	 public boolean isContinuous(int [] numbers) {
+			if(numbers == null || numbers.length < 1)
+	            return false;
+	        Arrays.sort(numbers);    //排序
+	        int numberOfZero = 0;    //数组中0的个数
+	        int numberOfGap = 0;     //数组中非连续数字的间隔
+	        for(int i=0; i<numbers.length; i++){
+	            if(numbers[i] == 0)
+	                numberOfZero++;
+	        }
+	        int small = numberOfZero;
+	        int big = small + 1;
+	        while(big < numbers.length){
+	            //对子
+	            if(numbers[small] == numbers[big])
+	                return false;
+	            numberOfGap += numbers[big] - numbers[small] -1;  //比如1,3，中间补1个数
+	            small++;
+	            big++;
+	        }
+	        return numberOfZero >= numberOfGap ? true:false;
+	   }
+	 
+	 /**
+	  * 二叉树中序遍历的下一个节点
+	  */
+	 public TreeLinkNode GetNext(TreeLinkNode pNode){
+	        if(pNode == null)
+	            return null;
+	        TreeLinkNode pNext = null;
+	        if(pNode.right != null){
+	            TreeLinkNode node = pNode.right;
+	            while(node.left != null)
+	                node = node.left;
+	            pNext = node;  //父节点
+	        }
+	        else{
+	            TreeLinkNode parent = pNode.next; //父节点
+	            //直到找到一个节点是它父亲节点的左子节点
+	            while(parent != null && pNode != parent.left){ 
+	               parent = parent.next;
+	               pNode = pNode.next;
+	            }
+	            pNext = parent;
+	        }
+	        return pNext;
+	  }
 	 
 	public static void main(String[] args) {
-//		System.out.println(NumberOf1Between1AndN_Solution(12));
-//		System.out.println("==========================");
-//		int[] test = new int[]{52,3,4,1};
-//		System.out.println(PrintMinNumber(test));
-//		System.out.println("==========================");
-//		System.out.println(GetUglyNumber_Solution(5));
-//		System.out.println("==========================");
-//		System.out.println(FirstNotRepeatingChar("sPeYjppjOPHoiYdzlTUufOOzlnSudHuHzbWXzZnyPWrnkFfmQX"));
-//		ListNode l1 = new ListNode(1);
-//		ListNode l2 = new ListNode(2);
-//		ListNode l3 = new ListNode(3);
-//		ListNode l4 = new ListNode(6);
-//		ListNode l5 = new ListNode(7);
-//		l1.next = l2;
-//		l2.next = l3;
-//		l3.next = l4;
-//		l4.next = l5;
-//		
-//		ListNode a1 = new ListNode(1);
-//		ListNode a2 = new ListNode(2);
-//		ListNode a3 = new ListNode(3);
-//		ListNode a4 = new ListNode(6);
-//		ListNode a5 = new ListNode(7);
-//		a1.next = a2;
-//		a2.next = a3;
-//		a3.next = a4;
-//		a4.next = a5;
-//		ListNode listNode = FindFirstCommonNode(l1, a1);
-//		System.out.println(listNode.val);
-//		int[] array = new int[]{1,3,3,3,3,4,5};
-//		System.out.println(GetLastOfK(array, 2, 0, array.length-1));
-//		System.out.println(GetFirstOfK(array, 2, 0, array.length-1));
-		//System.out.println(GetNumberOfK(array, 3));
 		
-//		ListNode l1 = new ListNode(2);
-//		ListNode l2 = new ListNode(2);
-//		ListNode l3 = new ListNode(3);
-//		ListNode l4 = new ListNode(3);
-//		ListNode l5 = new ListNode(4);
-//		ListNode l6 = new ListNode(5);
-//		l1.next = l2;
-//		l2.next = l3;
-//		l3.next = l4;
-//		l4.next = l5;
-//		l5.next = l6;
-//		ListNode head = deleteDuplication(l1);
-//		while(head!=null){
-//			System.out.println(head.val);
-//			head = head.next;
-//		}
-//		String a = "12e";
-//		boolean flag = a.matches("[+-]?[0-9]*(\\.[0-9]+)?([eE][+-]?[0-9]+)?");
-//		System.out.println(flag);
-		
-		int[] a = new int[]{5,7,6,9,11,10,8};
-		System.out.println(VerifySquenceOfBST(a));
         
 	}
 }
