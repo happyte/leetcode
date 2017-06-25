@@ -402,6 +402,69 @@ public class Solution {
 	        return pNext;
 	  }
 	 
+	 /**
+	  * 和为s的连续正数序列
+	  */
+	 public ArrayList<ArrayList<Integer> > FindContinuousSequence(int sum) {
+	        ArrayList<ArrayList<Integer>> res = new ArrayList<>();
+	        if(sum < 3)
+	            return res;
+	        int small = 1;
+	        int big = 2;
+	        int curSum = small+big;  //3
+	        int middle = (1+sum)/2;  //因为是从小到大的正数序列
+	        while(small < middle){
+	            if(curSum == sum){
+	               //初始化List
+	               ArrayList<Integer> item = new ArrayList<>();
+	               for(int i=small; i<=big; i++)
+	                   item.add(i);
+	               res.add(item);
+	            }  
+	            while(curSum > sum && small < middle){
+	                curSum -= small;
+	                small++;
+	                if(curSum == sum){
+	                    //初始化List
+	                    ArrayList<Integer> item = new ArrayList<>();
+	                    for(int i=small; i<=big; i++)
+	                        item.add(i);
+	                    res.add(item);
+	                }  
+	            }
+	         	big++;
+	            curSum += big;
+	        }
+	        return res;
+	    }
+	 
+	 /**
+	  * 和为S的两个数字
+	  */
+	 public ArrayList<Integer> FindNumbersWithSum(int [] array,int sum) {
+	        ArrayList<Integer> res = new ArrayList<>();
+	        if(array.length < 2)
+	            return res;
+	        int start = 0;
+	        int end = array.length-1;
+	        while(end > start){
+	            int curSum = array[start]+array[end];
+	            //找到两者之和为S的情况
+	            if(curSum == sum){
+	                res.add(array[start]);
+	                res.add(array[end]);
+	                break;
+	            }
+	            //当前和太大
+	            else if(curSum > sum)
+	                end--;
+	            //当前和太小
+	            else
+	                start++;
+	        }
+	        return res;
+	    }
+	 
 	public static void main(String[] args) {
 		
         
