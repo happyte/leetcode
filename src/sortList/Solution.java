@@ -1,14 +1,9 @@
 package sortList;
 
+import dataStructure.ListNode;
+
 public class Solution {
-	class ListNode {
-		  int val;
-		  ListNode next;
-		  ListNode(int x) {
-		      val = x;
-		      next = null;
-		  }
-	}
+
 	//归并排序
     public ListNode sortList(ListNode head) {
         return mergeSort(head);
@@ -22,7 +17,6 @@ public class Solution {
     	if(walker.next!=null && walker.next.next!=null)  
     	{  
         	walker = walker.next;  
- 
     	}  
     	ListNode head2 = walker.next;  
     	walker.next = null;  
@@ -31,7 +25,7 @@ public class Solution {
     	head2 = mergeSort(head2);  
     	return mergeTwoLists(head1, head2);  
 	}  
-    
+    //两个有顺序链表的排序
     private ListNode mergeTwoLists(ListNode l1, ListNode l2) {
         ListNode helper = new ListNode(0);    //新建一个虚指针，指向链表头
         ListNode pre = helper;       //pre指针始终指向l1的前一个节点，初始指向的就是helper
