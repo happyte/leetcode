@@ -13,7 +13,7 @@ public class Solution {
         			res[j] = 0;
         		}
         		else{
-        				res[j] += res[j-1];
+        			res[j] += res[j-1];
         		}
         	}
         }
