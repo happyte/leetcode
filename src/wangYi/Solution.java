@@ -1,6 +1,9 @@
 package wangYi;
 
+import java.util.ArrayList;
 import java.util.Scanner;
+
+import com.sun.org.apache.xalan.internal.xsltc.compiler.sym;
 
 public class Solution {
 	public static void main(String[] args) {
@@ -17,82 +20,69 @@ public class Solution {
 //		System.out.println(calc(A));
 //		int[] A = new int[]{1,1,1,1,3,4,3};
 //		System.out.println(palindrome(4, A));
-		Scanner scanner = new Scanner(System.in);
-		while(scanner.hasNext()){
-			int n = Integer.parseInt(scanner.nextLine());
-            String[] strs = scanner.nextLine().split(" ");
-			int[] A = new int[strs.length];
-            for(int i=0;i<strs.length;i++){
-                A[i] = Integer.parseInt(strs[i]);
-            }
-            System.out.println(palindrome(n,A));
-		}
+//		Scanner scanner = new Scanner(System.in);
+//		while(scanner.hasNext()){
+//			int n = Integer.parseInt(scanner.nextLine());
+//            String[] strs = scanner.nextLine().split(" ");
+//			int[] A = new int[strs.length];
+//            for(int i=0;i<strs.length;i++){
+//                A[i] = Integer.parseInt(strs[i]);
+//            }
+//            System.out.println(palindrome(n,A));
+//		}
+		System.out.println('0');
 	}
 	
-	private static int palindrome(int n,int[] nums){
-		int count = 0;
-		int temp = 0;
-		int sum = 0;
-		//从后往前
-		int i = nums.length-1;
-		int j = 0;
-		int index = 0;
-		for(;i>=0;i--){
-			//从前往后
-			for(j=index;j<nums.length;j++){
-				if(temp < nums[i]){
-					System.out.println("temp:"+temp+" "+"num[i]:"+nums[i]);
-					temp+=nums[j];
-					count++;
-				}
-				if(temp > nums[i]){
-					System.out.println("==============");
-					count++;
-				}
-				if(temp == nums[i]){
-					break;
-				}
-			}
-			index = j+1;
-			temp = 0;
-			sum += count-1;
-			count = 0;
-			if((i-j)==1)
-				break;
+	private static int palindrome(int n,int[] item){
+		int leastTime = 0;
+		ArrayList<Integer> list = new ArrayList<Integer>();
+		for(int i=0;i<n;i++){
+			list.add(item[i]);
 		}
-		return sum;
+		 //由于元素是两个两个操作的，所以最后一次剩余的肯定是1个,无需判断
+		while(list.size() > 1){
+			//首小于尾
+			if(list.get(0) < list.get(list.size() - 1)){
+				//取出链表中的第一第二个元素
+				int a = list.get(0);
+				int b = list.get(1);
+				list.set(0, a+b);
+				//把第一个移除
+				list.remove(1);
+				//操作加1
+				leastTime++;
+			}
+			//首大于尾
+			else if(list.get(0) > list.get(list.size() - 1)){
+				//倒数第一和第二个元素相加
+				int a = list.get(list.size() - 1);
+				int b = list.get(list.size() - 2);
+				list.set(list.size() - 2, a+b);
+				//移除最后一个元素
+				list.remove(list.size() - 1);
+				leastTime++;
+			}
+			else{
+				list.remove(0);
+				list.remove(list.size() - 1);
+			}
+		}	
+		return leastTime;
 	}
 	
 	//复杂度过大
 	private static int elegantNum(int n){
-		int radio = (int) Math.sqrt(n);
+		//这里也是一个注意点,不能强转为int,否则就会坐标轴重复计算
+		double radio = Math.sqrt(n);
+		System.out.println(radio);
 		int count = 0;
-		int radioCount = 0;
-		int diaCount = 0;
-		//先求x,y轴的
-		for(int i=0;i<=radio;i++){
-			if(i*i == n)
-				radioCount++;
+		//i<radio没有等号，就是避免x,y轴的重复计算
+		for(int i=0;i<radio;i++){
+			double j = Math.sqrt(n-i*i);
+			if((int)j==j)
+				count++;
 		}
-		for(int j=0;j<=radio;j++){
-			if(j*j == n)
-				radioCount++;
-		}
-		//求对角线是否有满足的
-		for(int k=0;k<=radio;k++){
-			if(k*k*2 == n)
-				diaCount++;
-		}
-		//x,y正半轴，且y<x
-		for(int i= 0;i<=radio;i++){
-			for(int j=0;j<i;j++){
-				if((i*i+j*j) == n)
-					count++;
-			}
-		}
-		if(radioCount == 0)
-			return 4*(2*count+diaCount);
-		return 4*(2*count+diaCount-1);
+		return 4*count;
 	}
 	
 	//暗黑字符串
@@ -128,6 +118,7 @@ public class Solution {
 		}
 	}
 	
+	//6或8倍卖苹果
 	private static int maipingguo(int n){
 		int max6Num = n/6;
 		int minCount = Integer.MAX_VALUE;
@@ -144,6 +135,7 @@ public class Solution {
 		return minCount;
 	}
 	
+	//A+B,B+C,A-B,B-C
 	private static String calc(int[] nums){
 		String str = "";
 		int A = (nums[0]+nums[2])/2;
