@@ -34,6 +34,10 @@ public class Solution {
 			                      {'S','F','C','S'},
 			                      {'A','D','E','E'}};
 	    String w = "ABCB";
-	    System.out.println(exist(A, w));
+	    //System.out.println(exist(A, w));
+	    String a = new String();
+	    String b = new String();
+	    System.out.println(a == b);
+	    System.out.println(a.equals(b));
 	}
 }
