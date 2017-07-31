@@ -1,14 +1,9 @@
 package reorderList;
 
+import dataStructure.ListNode;
+
 public class Solution {
-	class ListNode {
-		int val;
-		ListNode next;
-		ListNode(int x) {
-		   val = x;
-		   next = null;
-		}
-	}
+	
 	public void reorderList(ListNode head) {
         if(head == null || head.next==null)  
     	{  
@@ -35,7 +30,7 @@ public class Solution {
     	}  
     }
 	//非递归方式反转链表
-	private ListNode reverse(ListNode head){
+	private static ListNode reverse(ListNode head){
 		ListNode pre = null;
 		ListNode cur = head;
 		ListNode next = head.next;
@@ -48,39 +43,31 @@ public class Solution {
 		return pre;
 	}
 	//递归方式的反转链表
-	public ListNode recursive_reverse(ListNode head) {  
+	public static ListNode recursive_reverse(ListNode head) {  
     	if(head == null || head.next==null)  
         	return head;  
     	return recursive_reverse(head, head.next);  
 	}
-    private ListNode recursive_reverse(ListNode current, ListNode next)   
+	
+    private static ListNode recursive_reverse(ListNode current, ListNode next)   
 	{  
     	if (next == null) return current;  
     	ListNode newHead = recursive_reverse(current.next, next.next);  
     	next.next = current;  
     	current.next = null;  
     	return newHead;  
-    	
-    	
-//      if(runner == null)  
-//      {  
-//          n %= idx;  
-//          runner = head;  
-//          idx=0;  
-//          while(runner!=null && idx<n)  
-//          {  
-//              runner = runner.next;  
-//              idx++;  
-//          }  
-//      }  
-//      while(runner.next!=null)  
-//      {  
-//          walker = walker.next;  
-//          runner = runner.next;  
-//      }  
-//      runner.next = head;  
-//      ListNode newHead = walker.next;  
-//      walker.next = null;  
-//      return newHead;
 	}  
+    
+    public static void main(String[] args) {
+		ListNode l1 = new ListNode(1);
+		ListNode l2 = new ListNode(2);
+		ListNode l3 = new ListNode(3);
+		l1.next = l2;
+		l2.next = l3;
+		ListNode head = recursive_reverse(l1);
+		while(head != null){
+			System.out.println(head.val);
+			head = head.next;
+		}
+	}
 }
