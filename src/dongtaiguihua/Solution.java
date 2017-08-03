@@ -230,10 +230,6 @@ public class Solution {
 		return dp[M-1][N-1];
 	}
 	
-	//把字符串1变为字符串2，插入一个字符的代价是ic,删除一个字符的代价是dc,替换一个字符的代价是rc,求最小代价
-	
-	
-	
 	//只有k个小于符号即('<'')和n-k-1个大于符号(即'>')
 	//对于1至n任意的排列中有多少个排列可以使用这些符号使其为合法的不等式数列。
 	//dp[i][j]代表有i个数字和j个小于号能构成的数量,最大应该为dp[n][k]
@@ -257,7 +253,86 @@ public class Solution {
 		return dp[n][k];
 	}
 	
+	//分糖问题
+	public static int candy(int[] ratings) {
+		int n = ratings.length;
+		if(n == 0) return 0;
+		if(n == 1) return 1;
+		int res = 0;
+		int[] cans = new int[n];
+		Arrays.fill(cans, 1);
+		//右边比左边得分高，分到的糖多
+		for(int i=1;i<n;i++){
+			if(ratings[i]>ratings[i-1])
+				cans[i] = cans[i-1]+1;
+		}
+		//左边比右边大，分到的糖多,例如2,1
+		for(int i = n-2;i>=0;i--){
+			if(ratings[i]>ratings[i+1]&&cans[i]<=cans[i+1])
+				cans[i] = cans[i+1]+1;
+		}
+		for(int i=0;i<n;i++){
+			res += cans[i];
+		}
+		return res;
+	}
+	
+	//解码方式
+	//dp[i]代表s[0...i-1]的编码方式数量
+	public static int numDecodings(String s) {
+		if(s == null || s.length() == 0)
+			return 0;
+		//第一位为0的话，是不可能组合出任何结果的，返回0
+		if(s.charAt(0) == '0')
+			return 0;
+		int n = s.length();
+		int[] dp = new int[n+1];
+		dp[0] = 1;
+		dp[1] = 1;
+		//如果这道题不考虑限制条件的话,dp[i]=dp[i-1]+dp[i-2]
+		for(int i=2;i<=n;i++){
+			//s[i-1]=0的话,dp[i]=dp[i-2]
+			if(s.charAt(i-1) != '0')
+				dp[i] += dp[i-1];
+			//s[i-2,i-1]中的前一项不为0，且范围在1～26之间
+			int temp = Integer.valueOf(s.substring(i-2, i));
+			if(s.charAt(i-2) != '0' && (temp>=1 && temp <= 26))
+				dp[i] += dp[i-2];
+		}
+		return dp[n];
+	}
+	
+	//最小步数把word1转成word2,增删改的代价都是一样的
+	public static int minDistance(String word1, String word2) {
+		if(word1 == null || word2 == null)
+			return 0;
+		int M = word1.length();
+		int N = word2.length();
+		//dp[i][j]代表把word1[0...i-1]变成word2[0...j-1]的最小步数
+		int[][] dp = new int[M+1][N+1];
+		//空字符串变成空字符串
+		dp[0][0] = 0;
+		//第一列
+		for(int i=0;i<=M;i++)
+			dp[i][0] = i;
+		//第一行
+		for(int j=0;j<=N;j++)
+			dp[0][j] = j;
+		for(int i=1;i<=M;i++){
+			for(int j=1;j<=N;j++){
+				//如果word1[i]=word2[j]
+				if(word1.charAt(i-1)==word2.charAt(j-1)){
+					dp[i][j] = Math.min(dp[i-1][j-1], Math.min(dp[i-1][j]+1, dp[i][j-1]+1));
+				}
+				else{
+					dp[i][j] = Math.min(dp[i-1][j-1]+1, Math.min(dp[i-1][j]+1, dp[i][j-1]+1));
+				}
+			}
+		}
+        return dp[M][N];
+    }
+	
 	public static void main(String[] args) {
-		maxsubstring("1A2C3D4B56", "B1D23CA45B6A");
+		System.out.println(minDistance("ab", ""));
 	}
 }
