@@ -211,6 +211,47 @@ public class Solution {
 //		Scanner scanner = new Scanner(System.in);
 //		String s1 = scanner.nextLine();
 //		String s2 = scanner.nextLine();
-		System.out.println(maxlength("abe", "cabc"));
+//		System.out.println(maxlength("abe", "cabc"));
+		Scanner in = new Scanner(System.in);
+        int N = in.nextInt();
+        int[] pre = new int[100005];            //从前往后最大递增子序列
+        int[] suf = new int[100005];            //从后往前最大递增子序列
+        int[] num = new int[100005];
+        Arrays.fill(pre,1);
+        Arrays.fill(suf, 1);
+        for ( int i = 1 ; i <= N ; i++){
+             num[i] = in.nextInt();
+        }
+        for ( int i = 1 ; i <= N ; i++){
+            if ( num[i] > num[i-1]){
+                pre[i] = pre[i-1]+1;
+            }
+        }
+        for ( int i = 1 ; i <= N ; i++){
+        	System.out.print(pre[i]+" ");
+        }
+        System.out.println("");
+        for ( int i = N ; i >= 1 ; i--){
+            if (num[i] < num[i+1]){
+                suf[i] = suf[i+1]+1;
+            }
+        }
+        for ( int i = 1 ; i <= N ; i++){
+        	System.out.print(suf[i]+" ");
+        }
+        System.out.println("");
+        int res = 1;
+        for(int i = 1 ; i <= N ; i++){
+            res = Math.max(res, pre[i-1]+1);
+            res = Math.max(res, suf[i+1]+1);//以上两步是在找当前最长递增子序列，无论正的或者反的
+            if(num[i+1] - num[i-1] >= 2){
+            	System.out.println("i:"+i+" res:"+res);
+                res = Math.max(res, pre[i-1]+suf[i+1]+1);
+                System.out.println("i:"+i+" res:"+res);
+            }
+        }
+        System.out.println(res);
+
+        in.close();
 	}
 }
