@@ -462,11 +462,82 @@ public class Solution {
 	            else
 	                start++;
 	        }
-	        return res;
-	    }
+	       return res;
+	  }
+	
+	//matrix矩阵中是否包含str字符串,起点可以为矩阵的任意起点
+	public static boolean hasPath(char[] matrix, int rows, int cols, char[] str){
+		boolean[] visited = new boolean[matrix.length];
+		for(int i=0;i<rows;i++){
+			for(int j=0;j<cols;j++){
+				//该点失败的话，visited返回的还是全为false
+				if(isHasPath(matrix, str, 0, rows, cols, i, j, visited))
+					return true;
+			}
+		}
+	    return false;	
+	}
+	
+	//row,col为起点的位置，rows为总行数，cols为总列数,index为匹配
+	private static boolean isHasPath(char[] matrix,char[] str,int index,int rows,int cols,int row,int col,boolean[] visited){
+		//已经找完了
+		if(index == str.length){
+			return true;
+		}
+		boolean flag = false;
+		//在边界范围内，且字符匹配,且没有被访问过
+		if(col>=0&&col<cols&&row>=0&&row<rows&&matrix[row*cols+col]==str[index]&&!visited[row*cols+col]){
+			index++;
+			visited[row*cols+col] = true;
+			flag = isHasPath(matrix, str, index, rows, cols, row+1, col, visited)||
+				   isHasPath(matrix, str, index, rows, cols, row-1, col, visited)||
+				   isHasPath(matrix, str, index, rows, cols, row, col-1, visited)||
+				   isHasPath(matrix, str, index, rows, cols, row, col+1, visited);
+			if(!flag){
+				index--;
+				visited[row*cols+col] = false;
+			}
+		}
+		return flag;
+	}
+	
+	//rows为行数,cols为列数
+	public static int movingCount(int threshold, int rows, int cols){
+		ArrayList<Integer> res = new ArrayList<>();
+		res.add(0);
+		boolean[][] visited = new boolean[rows][cols];
+		huisuo(threshold, 0, 0, rows, cols, res, visited);
+		return res.get(0);
+	}
+	
+	private static void huisuo(int threshold, int row, int col,int rows,int cols,ArrayList<Integer> res,boolean[][] visited){
+		//满足域值，且在边界条件内,且没有被访问过
+		if(col>=0&&col<cols&&row>=0&&row<rows&&!visited[row][col]&&calcPrivot(row, col)<=threshold){
+			System.out.println("row:"+row+" col:"+col);
+			int count = res.get(0);
+			res.set(0, ++count);
+			//没搞清除这里不用保护现场，无论哪步走过了这个点，下次都不能再走这个点了，因此不用保护现场
+			visited[row][col] = true;
+			huisuo(threshold, row+1, col, rows, cols, res, visited);
+			huisuo(threshold, row-1, col, rows, cols, res, visited);
+			huisuo(threshold, row, col+1, rows, cols, res, visited);
+			huisuo(threshold, row, col-1, rows, cols, res, visited);
+			//xvisited[row][col] = false;
+		}
+	}
+	
+	private static int calcPrivot(int row,int col){
+		String s1 = String.valueOf(row);
+		String s2 = String.valueOf(col);
+		int sum = 0;
+		for(int i=0;i<s1.length();i++)
+			sum += s1.charAt(i)-'0';
+		for(int i=0;i<s2.length();i++)
+			sum += s2.charAt(i)-'0';
+		return sum;
+	}
 	 
 	public static void main(String[] args) {
-		
-        
+       System.out.println(movingCount(5, 10, 10));
 	}
 }
