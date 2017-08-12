@@ -3,36 +3,8 @@ package wangYi;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-import com.sun.org.apache.xalan.internal.xsltc.compiler.sym;
-
 public class Solution {
-	public static void main(String[] args) {
-//		Scanner scanner = new Scanner(System.in);
-//		while(scanner.hasNext()){
-//			String[] strs = scanner.nextLine().split(" ");
-//            int[] A = new int[strs.length];
-//            for(int i=0;i<strs.length;i++){
-//            	A[i] = Integer.parseInt(strs[i]);
-//            }
-//            System.out.println(calc(A));
-//		}
-//		int[] A = new int[]{5,-3,15,13};
-//		System.out.println(calc(A));
-//		int[] A = new int[]{1,1,1,1,3,4,3};
-//		System.out.println(palindrome(4, A));
-//		Scanner scanner = new Scanner(System.in);
-//		while(scanner.hasNext()){
-//			int n = Integer.parseInt(scanner.nextLine());
-//            String[] strs = scanner.nextLine().split(" ");
-//			int[] A = new int[strs.length];
-//            for(int i=0;i<strs.length;i++){
-//                A[i] = Integer.parseInt(strs[i]);
-//            }
-//            System.out.println(palindrome(n,A));
-//		}
-		System.out.println('0');
-	}
-	
+
 	private static int palindrome(int n,int[] item){
 		int leastTime = 0;
 		ArrayList<Integer> list = new ArrayList<Integer>();
@@ -145,5 +117,9 @@ public class Solution {
 		if(B1 != B2)
 			return "NO";
 		return str+A+" "+B1+" "+C;
+	}
+	
+	public static void main(String[] args) {
+		
 	}
 }
