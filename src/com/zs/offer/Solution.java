@@ -5,9 +5,10 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Map;
-import java.util.Map.Entry;
+import java.util.Set;
 import java.util.Stack;
 
 import dataStructure.ListNode;
@@ -478,6 +479,7 @@ public class Solution {
 	    return false;	
 	}
 	
+	//任意起点查找是否有匹配的字符串
 	//row,col为起点的位置，rows为总行数，cols为总列数,index为匹配
 	private static boolean isHasPath(char[] matrix,char[] str,int index,int rows,int cols,int row,int col,boolean[] visited){
 		//已经找完了
@@ -501,7 +503,7 @@ public class Solution {
 		return flag;
 	}
 	
-	//rows为行数,cols为列数
+	//机器人找路,rows为行数,cols为列数
 	public static int movingCount(int threshold, int rows, int cols){
 		ArrayList<Integer> res = new ArrayList<>();
 		res.add(0);
@@ -536,8 +538,121 @@ public class Solution {
 			sum += s2.charAt(i)-'0';
 		return sum;
 	}
+	
+	//顺时针打印矩阵
+	//1  2  3  4
+	//5  6  7  8
+	//9  10 11 12
+	//13 14 15 16
+	public static ArrayList<Integer> printMatrix(int [][] matrix) {
+		ArrayList<Integer> res = new ArrayList<>();
+		//行数
+		int n = matrix.length;
+		if(n == 1){
+			for(int i=0;i<matrix[0].length;i++)
+				res.add(matrix[0][i]);
+			return res;
+		}
+		//列数
+		int m = matrix[0].length;
+		if(m == 1){
+			for(int i=0;i<matrix.length;i++)
+				res.add(matrix[i][0]);
+			return res;
+		}
+		//需要遍历的层数
+		int min = Math.min(m, n);
+		int levels = min/2;
+		for(int level=0;level<levels;level++){
+			//上
+			for(int j=level;j<m-level-1;j++){
+				res.add(matrix[level][j]);
+			}
+			//右
+			for(int j=level;j<n-level-1;j++){
+				res.add(matrix[j][m-level-1]);
+			}
+			//下
+			for(int j=m-level-1;j>level;j--){
+				res.add(matrix[n-level-1][j]);
+			}
+			//左
+			for(int j=n-level-1;j>level;j--){
+				res.add(matrix[j][level]);
+			}
+		}
+		if(min%2==1){
+			//行数大于列数，添加的是列
+			if(n>m){
+				for(int i=levels;i<=n-levels-1;i++){
+					res.add(matrix[i][levels]);
+				}
+			}
+			else {
+				//列数大于行数，添加的是行
+				for(int i=levels;i<=m-levels-1;i++){
+					res.add(matrix[levels][i]);
+				}
+			}
+		}
+		return res;
+    }
+	
+	//字符串按照字典形式排列
+	public static ArrayList<String> Permutation(String str) {
+		if(str==null||str.length()==0)
+			return new ArrayList<String>();
+		Set<String> set = new LinkedHashSet<>();
+		char[] strs = str.toCharArray();
+		Arrays.sort(strs);
+		boolean[] visited = new boolean[strs.length];
+		helper(set, new ArrayList<Character>(), strs, visited);
+		ArrayList<String> res = new ArrayList<>(set);
+		return res;
+    }
+	
+	//set中存放字典中的值，item中存放着已经已经添加的字符
+	private static void helper(Set<String> set,ArrayList<Character> item,char[] strs,boolean[] visited){
+		//已经添加的字符达到给入的大小
+		if(item.size()==strs.length){
+			//item转换成String
+			StringBuffer sb = new StringBuffer();
+			for(int i=0;i<item.size();i++)
+				sb.append(item.get(i));
+			System.out.println("string:"+sb.toString());
+			set.add(sb.toString());
+			return;
+		}
+		for(int i=0;i<strs.length;i++){
+			if(!visited[i]){
+				//保护现场
+				visited[i] = true;
+				item.add(strs[i]);
+				helper(set, item, strs, visited);
+				item.remove(item.size()-1);
+				visited[i]=false;
+			}
+		}
+	}
+	
+	//找出滑动窗口数值的最大值 {2,3,4,2,6,2,5,1}
+	public static ArrayList<Integer> maxInWindows(int [] num, int size){
+        ArrayList<Integer> res = new ArrayList<>();
+        if(size == 0)
+        	return res;
+        for(int i=0;i<num.length-size+1;i++){
+        	int max = 0;
+        	for(int j=0;j<size;j++){
+        		max = Math.max(max, num[i+j]);
+        	}
+        	System.out.println("max:"+max);
+        	res.add(max);
+        }
+        return res;
+    }
 	 
 	public static void main(String[] args) {
-       System.out.println(movingCount(5, 10, 10));
+		int[] A = new int[]{2,3,4,2,6,2,5,1};
+		maxInWindows(A, 5);
 	}
 }
