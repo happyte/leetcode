@@ -3,9 +3,14 @@ package wangyiyoudao;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 
+import com.sun.org.apache.xalan.internal.xsltc.compiler.sym;
+
 public class Main {
+	//翻盘游戏
 	public static String fanpan(int[] num,int n,int k){ 
 		StringBuffer sb = new StringBuffer();
 		for(int j=0;j<k;j++){
@@ -101,24 +106,57 @@ public class Main {
 		return max;
 	}
 	
-	//W*H的网格最多能放几块蛋糕
-	//网格行编号0-H-1,列编号0-W-1
-	public static int dangao(int W,int H){
-		boolean[][] visited = new boolean[H][W];
+	/**
+	 * 2.幸运的袋子，从一个袋子中可以拿出一些数，使得剩下的数的累加大于累乘
+	 */
+	public static int dfs(int[] num,int index,long sum,long multi){
 		int count = 0;
-		for(int i=0;i<H;i++){
-			for(int j=0;j<W&&!visited[i][j];j++){
-				count++;
-				//距离差为2是不能放蛋糕的
-				if(i+2<H)
-					visited[i+2][j]=true;
-				if(j+2<W)
-					visited[i][j+2]=true;
-			}
+		for(int i=index;i<num.length;i++){
+			sum += num[i];
+			multi *= num[i];
+			//考虑前0...i-1的累加和累乘
+			if(sum>multi)
+				count = count+1+dfs(num, i+1, sum, multi);
+			else if (num[i] == 1)
+				count = count+dfs(num, i+1, sum, multi);
+			else
+				break;
+			sum -= num[i];
+			multi /= num[i];
+			//去除重复
+			while(i<num.length-1&&num[i]==num[i+1])
+				i++;
 		}
 		return count;
 	}
 	
+	/**
+		3.不要二
+		W*H的网格最多能放几块蛋糕
+		网格行编号0-H-1,列编号0-W-1
+		H是行，W是列
+	**/
+	public static int dangao(int W,int H){
+		System.out.println("W:"+W+" H:"+H);
+		//求偶数行可以出现的4*4的方块数,剩余1列的话只有剩余的一列,剩余2列或3列的话都有2列
+		int evenCount = H/4*2+(H%4<2? H%4 : 2);
+		System.out.println("evenCount:"+evenCount);
+		//求奇数行可以出现的4*4的方块数
+		int oddCount = (H-2)/4*2+((H-2)%4<2? (H-2)%4 : 2);
+		System.out.println("oddCount:"+oddCount);
+		int res = W/4*2*(evenCount+oddCount);
+		if(W%4>0)
+			res += evenCount;
+		if(W%4>1)
+			res += evenCount;
+		if(W%4>2)
+			res += oddCount;
+		return res;
+	}
+	
+	/**
+	 * 4.解救小易
+	 */
 	public static int xianjin(int[] x,int[] y,int n){
 		int min = 65536;
 		for(int i=0;i<n;i++){
@@ -128,7 +166,10 @@ public class Main {
 		return min;
 	}
 	
-	//B字符串插入A中，问有多少种插入方法使得插入后是个回文串
+	/**
+	 * 5.统计回文串
+	 * B字符串插入A中，问有多少种插入方法使得插入后是个回文串
+	 */
 	public static int huiwen(String s1,String s2){
 		int count = 0;
 		int n = s1.length();
@@ -149,28 +190,9 @@ public class Main {
 		return true;
 	}
 	
-	//幸运的袋子，从一个袋子中可以拿出一些数，使得剩下的数的累加大于累乘
-	public static int dfs(int[] num,int index,long sum,long multi){
-		int count = 0;
-		for(int i=index;i<num.length;i++){
-			sum += num[i];
-			multi *= num[i];
-			//考虑前0...i-1的累加和累乘
-			if(sum>multi)
-				count = count+1+dfs(num, index+1, sum, multi);
-			else if (num[i] == 1)
-				count = count+dfs(num, index+1, sum, multi);
-			else
-				break;
-			sum -= num[i];
-			multi /= num[i];
-			//去除重复
-			while(i<num.length-1&&num[i]==num[i+1])
-				i++;
-		}
-		return count;
-	}
-	
+	/**
+	 * 7.两种排序方法
+	 */
 	//输入的字符串是否为两种排序中的一种
 	public static String paixu(String[] strs){
 		String str= "none";
@@ -186,7 +208,7 @@ public class Main {
 	public static boolean isDictonary(String[] strs){
 		String[] strC = strs.clone();
 		//本身这个API就是按照字典排序
-		Arrays.sort(strs);
+		Arrays.sort(strC);
 		for(int i=0;i<strs.length;i++){
 			if(strC[i] != strs[i])
 				return false;
@@ -194,6 +216,62 @@ public class Main {
 		return true;
 	}
 	
+	public static boolean isLength(String[] strs){
+		for(int i=1;i<strs.length;i++){
+			if(strs[i].length()<strs[i-1].length())
+				return false;
+		}
+		return true;
+	}
+	
+	/**
+	 * 8.小易喜欢的单词
+	 */
+	public static String danci(String s){
+		Map<Character, Integer> map = new HashMap<>();
+		if(s.charAt(0)<'A'||s.charAt(0)>'Z')
+			return "Dislikes";
+		map.put(s.charAt(0), 1);
+		//如果单词有小写的单词或者前后两个连续，则直接返回DisLike
+		for(int i=1;i<s.length();i++){
+			//前后不相同，或不是大写字母
+			if(s.charAt(i) == s.charAt(i-1)||s.charAt(i)<'A'||s.charAt(i)>'Z'){
+				return "Dislikes";
+			}
+			else {
+				if(map.containsKey(s.charAt(i))){
+					int count = map.get(s.charAt(i));
+					map.put(s.charAt(i), ++count);
+				}
+				else {
+					map.put(s.charAt(i), 1);
+				}
+			}
+		}
+		String sb = new String();
+		for(int i=0;i<s.length();i++){
+			//如果大于一个字符
+			if(map.get(s.charAt(i))>1){
+				sb+=s.charAt(i);
+			}
+		}
+		int j = 0;
+		for(int i=1;i<sb.length();i++){
+			if(sb.charAt(i)==sb.charAt(0)){
+				j = i;
+				break;
+			}
+		}
+		for(int i=0;i<=j;i++){
+			if(i+j>=sb.length()||sb.charAt(i)!=sb.charAt(i+j))
+				return "Likes";
+		}
+		return "Dislikes";
+	}
+	
+	/**
+	 * 9.Fibonacci数列
+	 */
 	public static int feibonaqi(int n){
 		int a = 1;
 		int b = 1;
@@ -209,29 +287,37 @@ public class Main {
 		return min;
 	}
 	
-	public static boolean isLength(String[] strs){
-		for(int i=1;i<strs.length;i++){
-			if(strs[i].length()<strs[i-1].length())
-				return false;
+	/**
+	 * 10.数字游戏
+	 * 找出最小不能由n个数选取求和组成的数
+	 */
+	public static int mincost(int[] num){
+		//sum表示当前能够组合出的最大数
+		//如果num[i]-sum>1,表示sum+1这个数字肯定组合不出来
+		Arrays.sort(num);
+		if(num[0] != 1)
+			return 1;
+		int sum = num[0];
+		for(int i=1;i<num.length;i++){
+			if(num[i]-sum>1)
+				break;
+			else
+				sum += num[i];
 		}
-		return true;
+		return sum+1;
 	}
 	
-	//找出最小不能由n个数选取求和组成的数
-	public static int mincost(int[] num){
-		return 0;
+	//饥饿的小易
+	//1,000,000,007(贝壳总在能被1,000,000,007整除的位置)
+	//关键在于不知道移动是4 * x + 3还是8 * x + 7
+	public static int jie(int x){
+		int mod = 1000000007;
+		
+		return 1;
 	}
+	
 	
 	public static void main(String[] args) {
-		System.out.println(feibonaqi(22));
-//		Scanner scanner = new Scanner(System.in);
-//		int n = scanner.nextInt();
-//		int[] x = new int[n];
-//		int[] y = new int[n];
-//		for(int i=0;i<n;i++)
-//			x[i] = scanner.nextInt();
-//		for(int i=0;i<n;i++)
-//			y[i] = scanner.nextInt();
-//		System.out.println(xianjin(x, y, n));
+
 	}
 }
