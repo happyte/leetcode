@@ -309,6 +309,25 @@ public class Solution {
 		return root;
 	}
 	
+	//二叉查找树
+	//判断一刻树是否为二叉查找树
+	public boolean isValidBST(TreeNode root){
+		//如果前驱节点的值小于当前值，那么不是二叉搜索树
+		ArrayList<Integer> pre = new ArrayList<>();
+		pre.add(null);
+		return validhelper(root, pre);
+	}
+	
+	private static boolean validhelper(TreeNode root, ArrayList<Integer> pre){
+		if(root == null)
+			return true;
+		boolean left = validhelper(root.left, pre);
+		if(pre.get(0)!=null&&root.val<=pre.get(0))
+			return false;
+		pre.set(0, root.val);
+		return left & validhelper(root.right, pre);
+	}
+	
 	
 	public static void main(String[] args) {
 		TreeNode t1 = new TreeNode(1);
@@ -330,6 +349,9 @@ public class Solution {
 				System.out.print(res.get(i).get(j)+" ");
 			System.out.println("");
 		}
+		int i = 1;
+		short j = 2;
+		
 	}
 	
 }
