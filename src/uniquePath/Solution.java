@@ -1,5 +1,6 @@
 package uniquePath;
 
+//从起点走到终点的走法
 public class Solution {
 	//递归思路,依赖前m-1,n-1的结果,如果m和n大到100的话，早就超时了
 	public static int uniquePaths(int m, int n) {

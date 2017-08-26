@@ -2,6 +2,7 @@ package deleteDuplication;
 
 import dataStructure.ListNode;
 
+//删除链表重复的节点
 public class Solution {
 	public static ListNode deleteDuplication(ListNode pHead)
     {    

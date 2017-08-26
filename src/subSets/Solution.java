@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+//列出字符串数组的所有组合情况的可能
 public class Solution {
 	public static ArrayList<ArrayList<Integer>> subsets(int[] S) {
 		ArrayList<ArrayList<Integer>> res = new ArrayList<>();

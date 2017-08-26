@@ -1,8 +1,8 @@
 package partitionList;
 
-
 import dataStructure.ListNode;
 
+//把小于x的节点放到前面，不改变相对位置
 public class Solution {
 	
 	public static ListNode partition(ListNode head, int x) {

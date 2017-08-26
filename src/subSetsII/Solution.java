@@ -3,6 +3,7 @@ package subSetsII;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+//去除重复的情况
 public class Solution {
 	public static ArrayList<ArrayList<Integer>> subsets(int[] S) {
 		ArrayList<ArrayList<Integer>> res = new ArrayList<>();

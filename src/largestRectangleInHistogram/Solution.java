@@ -2,6 +2,7 @@ package largestRectangleInHistogram;
 
 import java.util.Stack;
 
+//最大矩形面积
 public class Solution {
 	public static int largestRectangleArea(int[] height) {
 		//数组的最后一个数字添加0 

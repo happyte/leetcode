@@ -2,6 +2,7 @@ package rotateList;
 
 import dataStructure.ListNode;
 
+//旋转链表问题
 public class Solution {
 	//把链表的倒数k个节点反转到链表开头
 	public static ListNode rotateRight(ListNode head, int n) {

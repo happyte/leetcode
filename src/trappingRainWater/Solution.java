@@ -1,5 +1,6 @@
 package trappingRainWater;
 
+//模拟接水过程
 public class Solution {
 	 //模拟接雨水过程
 	 public static int trap(int[] A) {

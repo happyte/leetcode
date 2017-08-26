@@ -199,12 +199,29 @@ public class Main {
 		return sb.toString();
 	}
 	
-	public static void main(String[] args) { 
-		Scanner scanner = new Scanner(System.in);
-		String str = scanner.nextLine();
-		String newStr = new String();
-		for(int i=str.length()-1;i>=0;i--)
-			newStr += str.charAt(i);
-		System.out.println(zucheng(newStr));
+	public static int pick(int[] peaches) {
+		int l = peaches.length;
+		int[] dp = new int[l];
+		//无论如何，最长递增最小长度肯定为1，因为就是当前项本身
+		Arrays.fill(dp, 1);
+		for(int i=1;i<l;i++){
+			for(int j=0;j<i;j++){
+				if(peaches[j]<peaches[i]){
+					dp[i] = Math.max(dp[j]+1, 1);
+				}
+			}
+		}
+		return dp[l-1];
 	}
+
+	
+	public static void main(String[] args){
+        Scanner in = new Scanner(System.in);
+        int trees = Integer.parseInt(in.nextLine().trim());
+        int[] peaches = new int[trees];
+        for (int i = 0; i < peaches.length; i++) {
+            peaches[i] = Integer.parseInt(in.nextLine().trim());
+        }
+        System.out.println(pick(peaches));
+    }
 }

@@ -7,8 +7,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
-import com.sun.org.apache.xalan.internal.xsltc.compiler.sym;
-
 public class Main {
 	//翻盘游戏
 	public static String fanpan(int[] num,int n,int k){ 

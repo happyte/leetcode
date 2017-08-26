@@ -2,6 +2,7 @@ package combinations;
 
 import java.util.ArrayList;
 
+//给定两个数N,K,求出所有K个组合的1...n
 public class Solution {
 	//NP问题，循环递归
 	public static ArrayList<ArrayList<Integer>> combine(int n, int k) {
@@ -26,15 +27,12 @@ public class Solution {
 	}
 	
 	public static void main(String[] args) {
-		ArrayList<ArrayList<Integer>> res = combine(4, 4);
+		ArrayList<ArrayList<Integer>> res = combine(4, 2);
 		for(int i=0;i<res.size();i++){
 			for(int j=0;j<res.get(0).size();j++){
 				System.out.print(res.get(i).get(j));
 			}
 			System.out.println();
 		}
-		String str1="hello";
-		String str2="he"+ new String("llo");
-		System.out.println(str1==str2);
 	}
 }

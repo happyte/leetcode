@@ -2,6 +2,7 @@ package maximalRectangle;
 
 import java.util.Stack;
 
+//查找最大的1的矩形面积
 public class Solution {
 	public static int maximalRectangle(char[][] matrix) {
 		if(matrix == null || matrix.length == 0 || matrix[0].length == 0)

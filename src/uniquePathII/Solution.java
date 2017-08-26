@@ -1,5 +1,6 @@
 package uniquePathII;
 
+//1是障碍
 public class Solution {
 	public static int uniquePathsWithObstacles(int[][] obstacleGrid) {
         if(obstacleGrid == null || obstacleGrid.length == 0 ||obstacleGrid[0].length ==0)

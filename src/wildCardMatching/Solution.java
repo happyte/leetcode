@@ -1,5 +1,6 @@
 package wildCardMatching;
 
+//正则匹配
 public class Solution {
 	public static boolean matchPattern(String s,String p){
 		if(s==null||s.length()==0||p==null||p.length()==0)

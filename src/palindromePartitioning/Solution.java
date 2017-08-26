@@ -2,6 +2,7 @@ package palindromePartitioning;
 
 import java.util.ArrayList;
 
+//可以切割成多少种情况的回文子串
 public class Solution {
 	public static ArrayList<ArrayList<String>> partition(String s){
 		ArrayList<ArrayList<String>> res = new ArrayList<>();
@@ -43,13 +44,7 @@ public class Solution {
 	}
 	
 	public static void main(String[] args)  {
-		System.out.println(partition("a"));
-		System.out.println('A'+10+3.1 );
-		Integer n1 = new Integer(47);
-        Integer n2 = new Integer(47);
-        System.out.print(n1 == n2);//false
-        System.out.print(",");
-        System.out.println(n1 != n2);//true
+		System.out.println(partition("aab"));
 	}
 	
 }

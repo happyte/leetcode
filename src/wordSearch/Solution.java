@@ -1,6 +1,5 @@
 package wordSearch;
 
-
 public class Solution {
 	public static boolean exist(char[][] board, String word) {
 		 if(board == null || board.length == 0 || word == null || word.length() == 0)
@@ -33,11 +32,7 @@ public class Solution {
 		char[][] A = new char[][]{{'A','B','C','E'},
 			                      {'S','F','C','S'},
 			                      {'A','D','E','E'}};
-	    String w = "ABCB";
-	    //System.out.println(exist(A, w));
-	    String a = new String();
-	    String b = new String();
-	    System.out.println(a == b);
-	    System.out.println(a.equals(b));
+	    String w = "ABCC";
+	    System.out.println(exist(A, w));
 	}
 }

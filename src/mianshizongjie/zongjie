@@ -50,16 +50,38 @@ DriverManager是个工厂类，把jdbc的Driver类加载进来
 select * from student limit pageSize*(pageNumber-1) + "," + pageSize
 
 13.对Struts的理解
+1).Struts 是个MVC框架，实质上就是个Servlet,这个Servlet叫做ActionServlet,在web.xml中把符合某种特征的所有请求交给
+这个Servlet处理，这个Servlet再参照另一个配置文件分发给不同的action去处理。
+2).ActionServlet交给action处理之前，首先会把请求封装成一个java bean对象
+3).如果开启了bean对象的validate方法，那么首先会先对其进行校验，如果校验成功，才会去调用action的execute方法，否则跳转到
+错误页面，这个错误页面由input属性决定
+4).action执行完成后的结果视图是个ActionForward对象，ActionForward通过struts-config.xml文件配置到与之关联的jsp页面
 
 14.对Hibernate的理解
+1).Hibernate是流行的ORM(关系对象映射型数据库)框架，封装了底层JDBC代码
+2).使用步骤  配置Configuration对象,创建SessionFactory,创建Session对象，启动事务，执行CRUD操作，提交事务，关闭Session
+3).使用Hibernate时，先配置hibernate.cfg.xml配置数据库信息和方言等，在xxx.hbm.xml中配置映射关系，加到hibernate.cfg.xml中
 
 15.对Spring的理解
+IOC:反转控制实现了松散耦合，只要给出它们的依赖，而不是通过查找或者创建找出依赖的对象
+AOP:面向切面编程，在一些方法中需要加入系统模块的代码，例如日志配置，异常处理。
+使用的是代理技术实现的，客户端程序不再调用目标类，而是调用代理类，目标类和代理类对外具有相同的方法声明，一种方法是实现相同
+的接口，另一种方法是作为目标的子类
 
 16.介绍一下Hibernate的二级缓存
+什么是缓存
+二级缓存的作用是什么
+如何配置二级缓存
+1).所谓的缓存的就是从数据库中查询出来的对象放到内存中，类似于一个HashMap,下次查询的时候就不需要发送SQL语句，而只是从缓存中查询
+2).一般session不能长时间开启，一般只作用于一次事务。而且session是线程不安全的，这就意味着它不能被其它线程共享。二级缓存就是个全局的，
+多个线程和多个事务都可以共享。
+3).在hibernate.cfg.xml中配置你需要的二级缓存商品，然后在其的配置文件中添加你所需要加入二级缓存的对象
 
 17.Hibernate的一对多和多对一双向关联的区别？
+一对多是从一的一端查询多的一端的对象，而多对一是从多的一端查询一的一端的对象
 
 18.Hibernate是如何延迟加载? 
+1).当Hibernate查询对象时，并没有将对象加载到内存中，而是真正需要用到这个对象的时候，这个对象才存在于内存中
 
 19.ApplicationContext通常的实现是什么?
 
@@ -68,12 +90,23 @@ select * from student limit pageSize*(pageNumber-1) + "," + pageSize
 21.Hibernate中SessionFactory是线程安全的吗？Session是线程安全的吗（两个线程能够共享同一个Session吗）？
 
 22.什么是死锁(Deadlock)？如何分析和避免死锁？
+死锁是指两个以上的线程永远阻塞的情况
+分析死锁，我们需要查询java应用程序的线程转储，我们需要找出那些状态为BLOCKED的线程和它们等待的资源，因为每一个资源
+都有唯一确定的id,通过这个id我们可以找出哪些线程已经拥有了对象锁
 
 23.什么是ThreadLocal?
+ThreadLocal用于创建线程的本地变量，一般一个对象的所有线程会共享这个对象的全局变量，这个变量是线程不安全的，一种
+方式是使用同步技术，另一种方式是是使用ThreadLocal
+每个线程都会拥有它的Thread变量，可以使用set/get方法去获取默认值或者修改值，ThreadLocal实例通常是希望它们同线程状态
+关联起来的是private static属性
 
 24.什么是线程饿死，什么是活锁？
+饿死:当所有的线程阻塞，或者由于需要的资源无效而不能处理，不存在非阻塞线程使资源可用
+活锁:当所有的线程都调用object.wait方法，程序将发生活锁直到相应对象的线程调用notify方法
 
 25.什么是线程池？ 为什么要使用它？
+创建线程是需要花费时间和资源的，如果任务来了才建立，那么会响应时间会变长，而且一个进程能够创建的线程数是一定的
+线程池就是在程序开始时建立多个线程来响应处理
 
 26.编写一段泛型程序来实现LRU缓存?
 
@@ -82,3 +115,62 @@ ArrayList
 HashMap
 HashTable
 CurrentHashMap
+
+
+大搜车面试总结:
+1.java线程间的通信方式，除了voltaile变量(管道机制怎么用)
+1⃣同步，使用synchronized关键字
+2⃣while轮询机制
+3⃣wait,notify机制
+4⃣管道机制
+
+2.Arrays.sort方法的排序原理是什么
+JDK1.7以前是归并排序，在JDK1.7后优化成了TimeSort排序
+
+3.object类有哪些方法
+wait,notify,notifyAll,equals,hashcode,getClass,toString,finalize
+getClass返回运行时类
+clone:浅拷贝
+toString:返回对象的字符串表示
+notify:唤醒该对象监视器上等待的单个线程
+notifyAll:唤醒该对象监视器上等待的所有线程
+finalize:用于释放资源，因为无法确定该方法何时被调用，因此很少使用
+
+4.http状态码包括哪些?
+200:请求成功,一般用于GET和POST请求
+201:已创建，成功请求并创建新的资源
+202:已接受请求，但未处理完成
+301:资源网页被永久转移到其它URL
+404:请求的资源不存在
+500:服务器内部错误
+
+5.http请求头包括哪些东西?
+Accept-Charset:能够显示的字符集
+Accept-Encoding:编码格式
+Accept-Language:当前显示的语言
+Cookie:当前页面设置的Cookie
+Connection:当前的连接状态
+User-Agent:浏览器用户代理字符串
+
+6.AOP常用在哪些场景?
+日志、事务、权限监控
+两种方式:动态代理和静态织入
+
+7.Spring传播方式
+PROPAGATION_REQUIRED:如果没有当前事务，则新建一个事务。如果已经存在事务，则加入到事务中，最常见的选择。
+PROPAGATION_REQUIRES_NEW:新建事务，如果存在当前事务，则将当前事务挂起
+PROPAGATION_SUPPORTS:支持当前事务，如果没有事务，则以非事务的方式执行
+
+8.SpringMVC如何返回Json数据?
+在使用@RequestMapping注解后，返回值一般解析成路径跳转,加上@ResponseBody不会被解析成路径跳转，
+而是写到Http响应正文(ResponseBody)中，一般在异步获取数据时使用，比如json,直接返回json数据 
+
+@RequestBody注解将Http请求正文写到方法体中，使用适合的HttpMessageConverter将请求体写入某个对象
+
+9.数据库4种隔离级别
+1)丢失更新:两个事务同时更新一行数据，一个事务对数据的更新导致另一个事务对数据的更新覆盖
+2)脏读:一个事务读取到了另一个事务未提交的数据
+3)不可重复读:一个事务对同一行数据读取了两次，读到的结果不相同
+4)幻读:一个事务对满足某种条件的记录进行多次查询，查询到的次数不相同，因为另一个事务插入或者删除了满足该条件的记录
+
+未提交读:

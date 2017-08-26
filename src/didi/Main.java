@@ -148,26 +148,33 @@ public class Main {
 	
 	public static void main(String[] args) {
 		Scanner scanner = new Scanner(System.in);
-		rows = scanner.nextInt();
-		cols = scanner.nextInt();
-		int p = scanner.nextInt();
-		array = new int[rows][cols];
-		for(int i=0;i<rows;i++){
-			for(int j=0;j<cols;j++)
-				array[i][j] = scanner.nextInt();
-		}
-		ArrayList<Point> list = new ArrayList<>();
-		dfs(0, 0, p, list);
-		if(res.size() == 0){
-			System.out.println("Can not escape!");
-			return;
-		}
-		ArrayList<Point> test = res.lastEntry().getValue();
-		for(int i=0;i<test.size();i++){
-			if(i!=test.size()-1)
-				System.out.print("["+test.get(i).x+","+test.get(i).y+"]"+",");
-			else
-				System.out.print("["+test.get(i).x+","+test.get(i).y+"]");
-		}
+		String[] strs = scanner.nextLine().split(" ");
+		int length = strs.length;
+		int[] num = new int[length];
+		for(int i=0;i<length;i++)
+			num[i] = Integer.valueOf(strs[i]);
+		System.out.println(maxII(length, num));
+//		Scanner scanner = new Scanner(System.in);
+//		rows = scanner.nextInt();
+//		cols = scanner.nextInt();
+//		int p = scanner.nextInt();
+//		array = new int[rows][cols];
+//		for(int i=0;i<rows;i++){
+//			for(int j=0;j<cols;j++)
+//				array[i][j] = scanner.nextInt();
+//		}
+//		ArrayList<Point> list = new ArrayList<>();
+//		dfs(0, 0, p, list);
+//		if(res.size() == 0){
+//			System.out.println("Can not escape!");
+//			return;
+//		}
+//		ArrayList<Point> test = res.lastEntry().getValue();
+//		for(int i=0;i<test.size();i++){
+//			if(i!=test.size()-1)
+//				System.out.print("["+test.get(i).x+","+test.get(i).y+"]"+",");
+//			else
+//				System.out.print("["+test.get(i).x+","+test.get(i).y+"]");
+//		}
 	}
 }
