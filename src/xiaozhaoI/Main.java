@@ -11,12 +11,11 @@ public class Main {
 	//放入的鱼的范围是[minSize,maxSize],鱼缸里面已经有的鱼是num,鱼的范围在[2,10]是会被吃掉的
 	public static int fangyu(int minSize,int maxSize,int[] num){
 		boolean[] visited = new boolean[maxSize+1];
-		for(int i=0;i<num.length;i++){
-			//对当前鱼缸里面的每条鱼进行分析，哪些大小的鱼是不能放了
-			int temp = num[i];
-			for(int j=2;j<=10;j++){
-				if(temp*j>=minSize&&temp*j<=maxSize){
-					visited[temp*j] = true;
+		for(int i=minSize;i<=maxSize;i++){
+			for(int j=0;j<num.length;j++){
+				if((2*i<=num[j]&&10*i>=num[j])||(i>=num[j]*2&&i<=num[j]*10)){
+					System.out.println("i:"+i);
+					visited[i]=true;
 				}
 			}
 		}
@@ -104,36 +103,21 @@ public class Main {
 	
 	//复杂度太大
 	//一个数字能表示为p^q(^表示幂运算)且p为一个素数,q为大于1的正整数就称这个数叫做超级素数幂,27,3,3
-	public static String sushumi(long n){
-		StringBuffer sb = new StringBuffer();
-		int index = -1;
-		for(int i=2;i<=n/2;i++){
-			long temp = n;
-			//i为素数
-			if(isSuShu(i)){
-				while(temp%i==0){
-					temp = temp/i;
-					if(temp==1){
-						index = i;
-						break;
-					}
-				}
-			}
-			if(index != -1)
+	public static void sushumi(long n){
+		boolean flag = false;
+		for(long q=2;q*q<=n;q++){
+			double p = Math.pow(n, 1d/q);
+			if((long)p==p&&isSuShu((long)p)){
+				System.out.println((long)p+" "+q);
+				flag = true;
 				break;
+			}
 		}
-		if(index == -1)
-			return "No";
-		sb.append(index).append(" ");
-		int count = 0;
-		while(n!=1){
-			n=n/index;
-			count++;
-		}
-		return sb.append(count).toString();
+		if(!flag)
+			System.out.println("No");
 	}
 	
-	public static boolean isSuShu(int n){
+	public static boolean isSuShu(long n){
 		for(int i=2;i<=Math.sqrt(n);i++){
 			if(n%i==0)
 				return false;
@@ -213,15 +197,50 @@ public class Main {
 		}
 		return dp[l-1];
 	}
+	
+	//factor是0需要经过特殊处理
+	public static long getFactorCount(long num,int factor){
+		int i = 1;
+		int count = 0;
+		while(num/i!=0){
+			long cur = (num/i)%10;
+			long next = num/(i*10);
+			long before = num-(num/i)*i;
+			System.out.println("cur:"+cur+" next:"+next+" brefore:"+before);
+			if(cur==factor){
+				if(factor==0)
+					count += (next-1)*i+before+1;
+				else
+					count += next*i+before+1;
+			}
+			else if (cur<factor) {
+				if(factor==0)
+					count += (next-1)*i;
+				else
+					count += next*i;
+			}
+			else if (cur>factor) {
+				if(factor==0)
+					count += next*i;
+				else
+					count += (next+1)*i;
+			}
+			i*=10;
+		}
+        return count;
+    }
 
 	
 	public static void main(String[] args){
-        Scanner in = new Scanner(System.in);
-        int trees = Integer.parseInt(in.nextLine().trim());
-        int[] peaches = new int[trees];
-        for (int i = 0; i < peaches.length; i++) {
-            peaches[i] = Integer.parseInt(in.nextLine().trim());
+        Scanner scanner = new Scanner(System.in);
+        long n = scanner.nextLong();
+        StringBuffer sb = new StringBuffer();
+        for(int i=0;i<=9;i++){
+        	if(i != 9)
+        		sb.append(getFactorCount(n, i)).append(" ");
+        	else
+        		sb.append(getFactorCount(n, i));
         }
-        System.out.println(pick(peaches));
+        System.out.println(sb.toString());
     }
 }
