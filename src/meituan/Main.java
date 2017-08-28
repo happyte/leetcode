@@ -1,28 +1,17 @@
 package meituan;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.PriorityQueue;
 import java.util.Scanner;
 import java.util.Stack;
 
 public class Main {
-	public static void main(String[] args) {
-//		Scanner scanner = new Scanner(System.in);
-//		while(scanner.hasNext()){
-//			int n = Integer.parseInt(scanner.nextLine());
-//			String[] strs = scanner.nextLine().split(" ");
-//			int[] A = new int[n];
-//			for(int i=0;i<n;i++){
-//				A[i] = Integer.parseInt(strs[i]);
-//			}
-//			System.out.println(maxRectangle(A));
-//		}
-//		int[] A = new int[]{2,1,5,6,2,3};
-//		System.out.println(maxRectangle(A));
-//		combination(20);
-//		System.out.println(dafuwen(6));
-		System.out.println(substring("abcde", "cdedf"));
-	}
 	
+	//leetcode的最大矩阵问题
 	private static int maxRectangle(int[] height){
 		int[] h = new int[height.length+1];
 		int maxArea = 0;
@@ -46,6 +35,7 @@ public class Main {
 		return maxArea;
 	}
 	
+	//经典动态规划找硬币问题
 	private static int combination(int n){
 		int[] coins= new int[]{1,5,10};
 		int h = coins.length;
@@ -108,6 +98,207 @@ public class Main {
 			}
 		}
 		return max;
+	}
+	
+	//丢弃奇数位的数字
+	public static int qishuwei(int n){
+		ArrayList<Integer> list = new ArrayList<>();
+		for(int i=0;i<=n;i++)
+			list.add(i);
+		while(list.size()!=1){
+			for(int i=0;i<list.size();i+=1)
+				list.remove(i);
+		}
+		return list.get(0);
+	}
+	
+	//从右上角到左下角的对角线打印
+	public static int[] arrayPrint(int[][] arr, int n) {
+	     int[] res = new int[n*n];
+	     ArrayList<Integer> list = new ArrayList<>();
+	     //上三角
+	     //i变化为3,2,1,0
+	     for(int i=n-1;i>=0;i--){
+	    	 //i为3时，j也为3
+	    	int k = 0;
+	    	for(int j=i;j<=n-1;j++){
+	    		System.out.println("k:"+k+" j:"+j);
+	    		list.add(arr[k++][j]);
+	    	}
+	     }
+	     //下三角
+	     for(int i=1;i<=n-1;i++){
+	    	 int k = 0;
+	    	 for(int j=i;j<=n-1;j++){
+		    	 System.out.println("j:"+j+" k:"+k);
+		    	 list.add(arr[j][k++]);
+		     }
+	     }
+	     for(int i=0;i<list.size();i++){
+	    	 System.out.print(list.get(i)+" ");
+	    	 res[i] = list.get(i);
+	     }
+	     return res;
+	 }
+	 
+	 //股票只经过一次买卖  7,1,5,3,6,4
+	 public static int maxProfitI(int[] prices, int n) {
+		 int local = 0;
+		 int global = 0;
+		 for(int i=0;i<n-1;i++){
+			 local = Math.max(local+prices[i+1]-prices[i], 0);
+			 global = Math.max(local, global);
+		 }
+		 return global;
+	 }
+	      
+	 //股票允许经过两次买卖 
+	 public static int maxProfitII(int[] prices, int n) {
+		 int[] global = new int[3];
+		 int[] local = new int[3];
+		 for(int i=0;i<n-1;i++){
+			 int diff = prices[i+1]-prices[i];
+			 for(int j=2;j>=1;j--){
+				 local[j] = Math.max(global[j-1]+(diff>0?diff:0), local[j]+diff);
+				 global[j] = Math.max(local[j], global[j]);
+			 }
+		 }
+		 return global[2];
+	 }
+	 
+	 //可以进行无限多次交易,只要某两天是赚钱的，就进行交易
+	 public static int maxProfitIII(int[] prices, int n) {
+		 int res = 0;
+		 for(int i=0;i<n-1;i++){
+			 int diff = prices[i+1]-prices[i];
+			 if(diff>0)
+				 res += diff;
+		 }
+		 return res;
+	 }
+	 
+	 //哈夫曼树编码问题
+	 static class TreeNode{
+		 int weight;
+		 Character character;
+		 TreeNode left;
+		 TreeNode right;
+		 public TreeNode(int weight,Character character){
+			 this.weight = weight;
+			 this.character = character;
+		 }
+		 public TreeNode(int weight){
+			 this.weight = weight;
+		 }
+	 }
+	 
+	 //哈夫曼编码题
+	public static int hufuman(String s){
+		char[] strs = s.toCharArray();
+		Map<Character, Integer> map = new HashMap<>();
+		for(int i=0;i<strs.length;i++){
+			if(map.containsKey(strs[i])){
+				map.put(strs[i], map.get(strs[i])+1);
+			}
+			else {
+				map.put(strs[i], 1);
+			}
+		}
+		//优先队列,按照字符数量从小到大排列
+		PriorityQueue<TreeNode> pq = new PriorityQueue<>(map.size(), new Comparator<TreeNode>() {
+			@Override
+			public int compare(TreeNode o1, TreeNode o2) {
+				return o1.weight-o2.weight;
+			}
+		});
+		for(Map.Entry<Character, Integer> entry:map.entrySet()){
+			pq.offer(new TreeNode(entry.getValue(), entry.getKey()));
+		}
+		System.out.println();
+		while(pq.size()>1){
+			System.out.println();
+			TreeNode left = pq.poll();
+			TreeNode right = pq.poll();
+			System.out.println("left:"+left.character+" right:"+right.character);
+			TreeNode father = new TreeNode(left.weight+right.weight);
+			father.left = left;
+			father.right = right;
+			pq.offer(father);
+		}
+		return getLength(pq.poll(), 0);
+	}
+	
+	private static int getLength(TreeNode root,int depth){
+		if(root != null)
+			System.out.println("ch:"+root.character+" depth:"+depth);
+		if(root == null)
+			return 0;
+		return (root.character == null?0:root.weight)*depth+getLength(root.left, depth+1)+getLength(root.right, depth+1);
+	}
+	
+	//[5386,5384,11054,6345,5816,11757],6  6373
+	public static int longestDistance(int[] num,int n){
+		int local = 0;
+		int global = 0;
+		for(int i=0;i<n-1;i++){
+			local = Math.max(local+num[i+1]-num[i], 0);
+			global = Math.max(local, global);
+			System.out.println("local:"+local+" global:"+global);
+		}
+		return global;
+	}
+	
+	//n为行数，m为列数,1为经理位置，2为商家位置，0可以经过的，－1不能经过的
+	public static int countPath(int[][] map, int n, int m) {
+		boolean[][] visited = new boolean[n][m];
+        return helper(n, m, 0, 1, map, visited);
+    }
+	
+	//x为横坐标，y为纵坐标
+	public static int helper(int n,int m,int x,int y,int[][] map,boolean[][] visited){
+		int count = 0;
+		if(x<n&&x>=0&&y<m&&y>=0&&map[x][y] == 2){
+			count++;
+			return count;
+		}
+		if(x<n&&x>=0&&y<m&&y>=0&&!visited[x][y]&&map[x][y]!=-1){
+			visited[x][y] = true;
+			count += helper(n, m, x+1, y, map, visited);
+			count += helper(n, m, x-1, y, map, visited);
+			count += helper(n, m, x, y+1, map, visited);
+			count += helper(n, m, x, y-1, map, visited);
+			visited[x][y] = false;
+		}
+		return count;
+	}
+	
+	public static int countArea(int[] A, int n) {
+		int maxArea = 0;
+		int[] height = new int[n+1];
+		for(int i=0;i<n;i++)
+			height[i] = A[i];
+		height[n] = 0;
+		Stack<Integer> stack = new Stack<>();
+		int i = 0;
+		//压入的是索引值
+		while(i<n){
+			if(stack.isEmpty()||height[i]>height[stack.peek()]){
+				stack.push(i++);
+			}
+			else {
+				int t = stack.pop();
+				maxArea = Math.max(maxArea, height[t]*(stack.isEmpty()?i:i-stack.peek()-1));
+				System.out.println("maxArea:"+maxArea);
+			}
+		}
+        return maxArea;
+    }
+	
+	public static void main(String[] args) {
+		int[] A = new int[]{2,7,9,4,1};
+		System.out.println(countArea(A, 5));
+//		int[][] map = new int[][]{{0,1,0},{2,0,0}};
+//		System.out.println(countPath(map, 2, 3));
 	}
 	
 }
