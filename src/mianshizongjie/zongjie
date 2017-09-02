@@ -119,10 +119,11 @@ CurrentHashMap
 
 大搜车面试总结:
 1.java线程间的通信方式，除了voltaile变量(管道机制怎么用)
-1⃣同步，使用synchronized关键字
-2⃣while轮询机制
-3⃣wait,notify机制
-4⃣管道机制
+1).同步，使用synchronized关键字
+2).while轮询机制
+3).wait,notify机制
+4).管道机制
+5).消息队列
 
 2.Arrays.sort方法的排序原理是什么
 JDK1.7以前是归并排序，在JDK1.7后优化成了TimeSort排序
@@ -195,3 +196,85 @@ PROPAGATION_SUPPORTS:支持当前事务，如果没有事务，则以非事务�
 11.Java类的加载机制
 什么是类的加载:类的加载是指将类的.class文件中的二进制数据读到内存中，将其放在运行时数据区的方法区中，然后在内存的堆中创建一个java.lang.Class类
 用来封装类在方法区中的数据结构。类的加载的最终产品是在堆中的Class对象
+
+12.MyBatis一二级缓存
+一级缓存:就是SqlSession,在操作数据库时需要构建SqlSession对象，对象内部有个数据结构可以存储缓存，不同SqlSession之间的缓存是互不影响且不能被
+相互读取的
+用户发起查询请求，SqlSession先去缓存中找，如果有，则读取，如果没有，则查询数据库，并加入到一级缓存中去。
+但SqlSession执行commit时，会清空缓存，目的就是为了防止脏读
+二级缓存:是mapper级别的缓存，多个SqlSession可以共享二级缓存,也就是二级缓存是跨SqlSession的
+
+13.数据库常用的三大范式
+1).第一范式:强调列的原子性，不能再分成其它几列
+2).第二范式:没有包含在主键中的列必须完全依赖于主键，而不能依赖于主键的一部分
+3).第三范式:非主键必须依赖于主键，不能存在传递关系
+
+14.MySQL的优化
+
+
+15.left join、right join、inner join
+
+16.类加载机制，如果自己写的jar包应该放在哪里，自己定义了一个与jar包一样的类，会覆盖吗
+1).装载:把java二进制文件导入jvm中，生成Class文件 
+2).连接:a.检查Class文件的正确性  b.准备：给类的静态变量分配存储空间  c.解析：将符号引用转换成直接引用
+3).初始化:对类的静态变量、静态方法和静态代码块初始化
+
+17.Proxy和CGLIB
+静态代理是对已经生成了的Java类进行封装
+Proxy是动态代理，代理类与目标类实现相同的接口，CGLIB也是动态代理，实现目标类的子类
+
+1).Proxy实现代理的目标类必须有实现接口
+2).生成出来的代理类为接口实现类，和目标类不能进行转换，只能转为接口实现类进行调用
+
+1).CGLIB实现方式是对代理的目标类进行继承
+2).生成出了的代理类可以没方法，生成出来的类可以直接转换成目标类或目标类实现接口的实现类，因JAVA向上转换
+
+JDK动态代理(Proxy)只能为实现了接口的类生成代理，代理类与目标类实现了相同的接口，目标类作为代理类的一个属性，在具体的接口实现中，
+可以调用目标类的方法加上其它业务处理逻辑。而CGLIB是针对类实现代理，主要是对目标类生成子类，覆盖其方法。
+Spring Aop主要用在权限控制、事务、日志管理。默认的策略是如果目标类实现了接口，那么使用JDK动态代理，没有实现接口就是CGLIB
+
+18.数据库索引的作用
+索引是种数据结构，最常见的是B树，还有哈希索引,哈希索引只能用来查询key-value这种值，因为是无序的,而B树是按照顺序存储的
+索引的意义是通过缩小一张表中需要查询的记录／行的数目来加快搜索
+索引中除了存储列的值，还存储着一个指向在行数据的索引
+
+19.常见的MySQL优化
+1).使用索引
+2).少用SELECT *
+3).使用NOT NULL
+4).开启查询缓存
+5).在where子句中避免使用or,一个字段有索引，一个字段没有索引，将导致进行全表扫描
+select id from t where num=10 or Name = 'admin'
+改为
+select id from t where num = 10
+union all
+select id from t where Name = 'admin'
+6).尽量使用变长字段varchar/nvarchar代替char/nchar,因为变长字段的存储空间小
+7).考虑使用limit限制返回数据的量
+
+20.ThreadLocal的使用方法
+ThreadLocal不是一个线程的本地实例化，它的作用是为为每个使用该变量的线程提供一个变量值的副本,每个线程可以独立的改变本地副本，
+不会与其它线程的副本发生冲突。ThreadLocal有个map,key就是线程，value就是变量值的副本
+
+21.happens-before原则
+如果两个操作满足happens-before原则，那么前一个操作对后一个操作是可见的
+1).程序顺序原则:一个线程中的每个操作,happens-before于后面一个操作 
+2).监视器锁原则:一个监视器对象的解锁操作，happens-before于监视器对象的加锁操作
+3).voltaile原则:voltaile变量的写操作happens-before读操作之前
+4).传递性:A happens-before B,B happens-before C,则A happens-before C
+5).线程启动原则:一个线程的start happens-before于后序操作
+
+22.SpringMVC运行流程
+1).客户端发送请求到前端控制器DispatcherServlet
+2).DispatcherServlet查询相应的HandlerMapping,并转发给控制器Controller
+3).Controller处理完逻辑后，返回ModelAndView
+4).DispatcherServlet查询一个或者多个ViewAndResolver,找到ModelAndView对应的视图
+5).返回对应的视图给客户端
+
+23.Spring配置事务方法
+
+24.适配器模式、装饰者模式设计
+适配器模式:将一个接口配置到另一个接口
+装饰者模式:保持原有的接口，并增加其功能
+
+
