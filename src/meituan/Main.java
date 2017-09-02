@@ -250,27 +250,43 @@ public class Main {
 	
 	//n为行数，m为列数,1为经理位置，2为商家位置，0可以经过的，－1不能经过的
 	public static int countPath(int[][] map, int n, int m) {
-		boolean[][] visited = new boolean[n][m];
-        return helper(n, m, 0, 1, map, visited);
+		 int startX = 0;
+	        int startY = 0;
+	        int endX = 0;
+	        int endY = 0;
+	        for(int i=0;i<map.length;i++) {
+	            for(int j=0;j<map[0].length;j++) {
+	                if(map[i][j]==1) {
+	                    startX = i;
+	                    startY = j;
+	                }
+	                else if(map[i][j]==2) {
+	                    endX = i;
+	                    endY = j;
+	                }
+	            }
+	        }
+	        int dirX = startX>endX? -1:1;
+	        int dirY = startY>endY? -1:1;
+	        boolean[][] visited = new boolean[n][m];
+	        return helper(dirX,dirY,n,m,startX,startY,map,visited);
     }
 	
 	//x为横坐标，y为纵坐标
-	public static int helper(int n,int m,int x,int y,int[][] map,boolean[][] visited){
-		int count = 0;
-		if(x<n&&x>=0&&y<m&&y>=0&&map[x][y] == 2){
-			count++;
-			return count;
-		}
-		if(x<n&&x>=0&&y<m&&y>=0&&!visited[x][y]&&map[x][y]!=-1){
-			visited[x][y] = true;
-			count += helper(n, m, x+1, y, map, visited);
-			count += helper(n, m, x-1, y, map, visited);
-			count += helper(n, m, x, y+1, map, visited);
-			count += helper(n, m, x, y-1, map, visited);
-			visited[x][y] = false;
-		}
-		return count;
-	}
+	private static int helper(int dirX,int dirY,int n,int m,int x,int y,int[][] map,boolean[][] visited) {
+        int count = 0;
+        if(x>=0&&x<n&&y>=0&&y<m&&map[x][y]==2) {
+            count++;
+            return count;
+        }
+        if(x>=0&&x<n&&y>=0&&y<m&&!visited[x][y]&&map[x][y]!=-1) {
+            visited[x][y] = true;
+            count += helper(dirX,dirY,n,m,x+dirX,y,map,visited);
+            count += helper(dirX,dirY,n,m,x,y+dirY,map,visited);
+            visited[x][y] = false;
+        }
+        return count;
+    }
 	
 	public static int countArea(int[] A, int n) {
 		int maxArea = 0;
@@ -281,7 +297,7 @@ public class Main {
 		Stack<Integer> stack = new Stack<>();
 		int i = 0;
 		//压入的是索引值
-		while(i<n){
+		while(i<=n){
 			if(stack.isEmpty()||height[i]>height[stack.peek()]){
 				stack.push(i++);
 			}
@@ -294,11 +310,23 @@ public class Main {
         return maxArea;
     }
 	
+	//s1,s2之间按照字典排序，长度在len1 到 len2之间
+	public static int countDict(String s1,String s2,int len1,int len2){
+		
+		return 0;
+	}
+	
+	//计算N年后员工的平均年龄 5 5 0.2 3
+	public static int countAge(int W,double Y,double x,int N){
+		for(int i=0;i<N;i++){
+			Y = ((Y+1)*(W-W*x) + 21*(W*x))/W;
+		}
+		return (int)Math.ceil(Y);
+	}
+	
 	public static void main(String[] args) {
-		int[] A = new int[]{2,7,9,4,1};
-		System.out.println(countArea(A, 5));
-//		int[][] map = new int[][]{{0,1,0},{2,0,0}};
-//		System.out.println(countPath(map, 2, 3));
+		int[][] map = new int[][]{{0,1,0},{2,0,0}};
+		System.out.println(countPath(map, 2, 3));
 	}
 	
 }
