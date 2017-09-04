@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.Set;
 
 public class Main {
 	//翻盘游戏
@@ -314,8 +316,132 @@ public class Main {
 		return 1;
 	}
 	
+	/**
+	 * 有 n 个学生站成一排，每个学生有一个能力值，牛牛想从这 n 个学生中按照顺序选取 k 名学生，
+	 * 要求相邻两个学生的位置编号的差不超过 d，使得这 k 个学生的能力值的乘积最大，你能返回最大的乘积吗？
+	 * 3
+	   7 4 7
+	   2 50
+	 */
+	public static int hechangtuan(int[] num,int k,int d){
+		return 0;
+	}
 	
+	/**
+	 * 每个输入包含 1 个测试用例。每个测试用例的第 i 行，表示完成第 i 件料理需要哪些材料，
+	 * 各个材料用空格隔开，输入只包含大写英文字母和空格，输入文件不超过 50 行，每一行不超过 50 个字符。
+	 * BUTTER FLOUR
+	   HONEY FLOUR EGG
+	   4
+	 */
+	
+	/**
+	 * 分苹果，每次只能从一个奶牛上拿2个苹果给另外一头奶牛
+	 */
+	public static int fenpingguo(int n,int[] num){
+		int sum = 0;
+		for(int i=0;i<n;i++)
+			sum += num[i];
+		//如果苹果不能够被均分
+		if(sum%n != 0)
+			return -1;
+		Arrays.sort(num);
+		int count = 0;
+		int avg = sum/n;
+		for(int i=0;i<n;i++){
+			if(Math.abs(avg-num[i])%2==1){
+				return -1;
+			}
+			else{
+				count += Math.abs(avg-num[i])/2;
+			}
+		}
+		return count/2;
+	}
+	
+	public static long naijiudu(long h){
+		long x = (long) Math.sqrt(h);
+		for(long i=x;i>=0;i--){
+			if(i*(1+i)<=h)
+				return i;
+		}
+		return 0;
+	}
+	
+	public static String cangbaotu(String s,String t){
+		char[] sStr = s.toCharArray();
+		HashMap<Character, Integer> map = new HashMap<>();
+		for(int i=0;i<sStr.length;i++){
+			if(map.containsKey(sStr[i]))
+				map.put(sStr[i], map.get(sStr[i])+1);
+			else
+				map.put(sStr[i], 1);
+		}
+		char[] tStr = t.toCharArray();
+		for(int i=0;i<tStr.length;i++){
+			if(!map.containsKey(tStr[i]))
+				return "No";
+			else {
+				int count = map.get(tStr[i]);
+				if(--count >= 0){
+					map.put(tStr[i], count);
+				}
+				else
+					return "No";
+			}
+		}
+		return "Yes";
+	}
+	
+	//求str1,str2的最长公共子串，不要求连续
+	public static String isContain(String str1,String str2){  
+		int M = str1.length();
+		int N = str2.length();
+		//dp[i][j]代表str1[0...i]与str2[0...j]的最长公共子串
+		int[][] dp = new int[M][N];
+		//若dp[i][0]=1,则i以后的都为1
+		int i = 0;
+		for(;i<M;i++){
+			if(str1.charAt(i)==str2.charAt(0)){
+				dp[i][0] = 1;
+				break;
+			}
+		}
+		for(int k=i+1;k<M;k++)
+			dp[k][0] = 1;
+		//若dp[0][j]=1,则j以后的都为1
+		int j = 0;
+		for(;j<N;j++){
+			if(str1.charAt(0)==str2.charAt(j)){
+				dp[0][j] = 1;
+				break;
+ 			}
+		}
+		for(int k=j+1;k<N;k++)
+			dp[0][k] = 1;
+		for(i=1;i<M;i++){
+			for(j=1;j<N;j++){
+				if(str1.charAt(i)==str2.charAt(j))
+					dp[i][j] = Math.max(dp[i-1][j-1]+1, Math.max(dp[i-1][j], dp[i][j-1]));
+				else
+					dp[i][j] = Math.max(dp[i-1][j], dp[i][j-1]);
+			}
+		}
+		System.out.println(dp[M-1][N-1]);
+		if(dp[M-1][N-1] == str2.length())
+			return "Yes";
+        return "No";
+    }  
+	
+	//oxoxoxox
+	//ooxxoo
 	public static void main(String[] args) {
-
+		System.out.println(isContain("ukaovhzydz", "u"));
+//		Scanner scanner = new Scanner(System.in);
+//		while(scanner.hasNext()){
+//			String s = scanner.nextLine();
+//			String t = scanner.nextLine();
+//			System.out.println(cangbaotu(s, t));
+//		}
 	}
 }
