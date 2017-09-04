@@ -329,36 +329,93 @@ public class Main {
 		return pre;
 	}
 	
+	/**
+	 * 复杂链表的复制
+	 */
+	public static class RandomListNode {
+	    int label;
+	    RandomListNode next = null;
+	    RandomListNode random = null;
+	    RandomListNode(int label) {
+	        this.label = label;
+	    }
+	}
+	 
+	public static RandomListNode Clone(RandomListNode pHead){
+		if(pHead == null)
+			return null;
+		Map<RandomListNode, RandomListNode> map = new HashMap<>();
+		RandomListNode newHead = new RandomListNode(pHead.label);
+		map.put(pHead, newHead);
+		RandomListNode pre = newHead;     //新链表头元素
+		RandomListNode node = pHead.next; //旧链表头元素的下一个元素
+		while(node != null){
+			RandomListNode newNode = new RandomListNode(node.label);
+			map.put(node, newNode);
+			pre.next = newNode;  //新链表添加元素
+			pre = newNode;
+			node = node.next;
+		}
+		node = pHead;  //旧链表重新指向头节点
+		RandomListNode copyNode = newHead;  //新链表指向头节点
+		while(node != null){
+			copyNode.random = map.get(node.random);  //新链表的随机节点指向旧链表的随机节点
+			node = node.next;
+			copyNode = copyNode.next;
+		}
+		return newHead;
+	}
+	
+	/**
+	 * 如何判断一个单链表是否有环？有环的话返回进入环的第一个节点的值，无环的话返回-1。
+	 */
+	public int chkLoop(ListNode head, int adjust) {
+		if(head == null)
+			return -1;
+		ListNode walker = head;     //慢指针,每次走一步
+		ListNode runner = head;     //快指针,每次走两步
+		while(runner != null&& runner.next != null){
+			walker = walker.next;
+			runner = runner.next.next;
+			if(walker == runner)
+				break;
+		}
+		if(runner == null||runner.next == null)
+			return -1;
+		runner = head;
+		while(runner != walker){
+			runner = runner.next;
+			walker = walker.next;
+		}
+		return walker.val;
+    }
+	
+	/**
+	 * 两个无环单链表，若两个链表的长度分别为m和n，请设计一个时间复杂度为O(n + m)，额外空间复杂度为O(1)的算法，判断这两个链表是否相交。
+	 * 链表1先走n-m步，然后两个链表同步走，如果相交则会遇到一个公共
+	 */
+	public boolean chkIntersect(ListNode headA, ListNode headB) {
+		if (headA == null || headB == null)
+            return false;
+        int n = 0;
+        ListNode cur1 = headA;
+        while (cur1.next != null) {
+            n++;
+            cur1 = cur1.next;
+        }
+        ListNode cur2 = headB;
+        while (cur2.next != null) {
+            n--;
+            cur2 = cur2.next;
+        }
+        return cur1 == cur2;
+	}
 	
 	public static void main(String[] args) {
-		ListNode l1 = new ListNode(1);
-		ListNode l2 = new ListNode(2);
-		ListNode l3 = new ListNode(3);
-		ListNode l4 = new ListNode(4);
-		ListNode l5 = new ListNode(3);
-		ListNode l6 = new ListNode(2);
-		ListNode l7 = new ListNode(1);
-		l1.next = l2;
-		l2.next = l3;
-		l3.next = l4;
-		l4.next = l5;
-		l5.next = l6;
-		l6.next = l7;
-		ListNode r1 = new ListNode(2);
-		ListNode r2 = new ListNode(4);
-		ListNode r3 = new ListNode(6);
-		ListNode r4 = new ListNode(8);
-		ListNode r5 = new ListNode(10);
-		r1.next = r2;
-		r2.next = r3;
-		r3.next = r4;
-		r4.next = r5;
-		System.out.println(isPalindrome(l1));
-//		ListNode l = reverseList(l1);
-//		while(l != null){
-//			System.out.println(l.val);
-//			l = l.next;
-//		}
+		HashMap<Integer, Integer> map = new HashMap<>();
+		map.put(0, 10);
+		map.put(1, 11);
+		System.out.println(map.get(1));
 	}
 	 
 }
