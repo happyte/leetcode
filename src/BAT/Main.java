@@ -7,8 +7,10 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.Stack;
 
 import dataStructure.ListNode;
+import dataStructure.TreeNode;
 
 //牛客网BAT算法练习
 public class Main {
@@ -411,11 +413,235 @@ public class Main {
         return cur1 == cur2;
 	}
 	
+	/**
+	 * 在XxY的方格中，以左上角格子为起点，右下角格子为终点，每次只能向下走或者向右走，请问一共有多少种不同的走法
+	 */
+	public static int countWays(int x, int y) {
+		boolean[][] visited = new boolean[x][y];
+        return helper(0, 0, x-1, y-1, visited);
+    }
+	
+	private static int helper(int startX,int startY,int endX,int endY,boolean[][] visited){
+		int count = 0;
+		if(startX==endX&&startY==endY)
+			return ++ count;
+		if(startX<=endX&&startY<=endY&&!visited[startX][startY]){
+			visited[startX][startY] = true;
+			count += helper(startX+1, startY, endX, endY, visited);
+			count += helper(startX, startY+1, endX, endY, visited);
+			visited[startX][startY] = false;
+		}
+		return count;
+	}
+	
+	/**
+	 *n个人站队，他们的编号依次从1到n，要求编号为a的人必须在编号为b的人的左边，但不要求一定相邻，请问共有多少种排法？
+	 *第二问如果要求a必须在b的左边，并且一定要相邻，请问一共有多少种排法？
+	 */
+	public static int[] getWays(int n, int a, int b) {
+        // write code here
+		int[] res = new int[2];
+		int sum = 1;
+		for(int i=n;i>=2;i--)
+			sum *= i;
+		res[0] = sum/2;
+		sum = 1;
+		for(int i=n-1;i>=2;i--)
+			sum *= i;
+		res[1] = sum;
+		return res;
+    }
+	
+	/**
+	 * n颗相同的糖果，分给m个人，每人至少一颗，问有多少种分法。
+	 * Cn-1/m-1
+	 */
+	public static int getWays(int n, int m) {
+		long sum = 1;
+		for(int i=n-1;i>=n-m+1;i--)
+			sum *= i;
+		for(int i=m-1;i>=2;i--)
+			sum /= i;
+		return (int) sum;
+	}
+	
+	/**
+	 * 在一个n个人(其中编号依次为1到n)的队列中，他于其中的标号为b和标号c的人都有矛盾，
+	 * 所以他不会和他们站在相邻的位置。现在问你满足A的要求的对列有多少种？
+	 */
+	public static int getWays(int n, int A, int b, int c) {
+		//当A在两边时,2*(n-3)*(n-2)!
+		//当A不在两边时 (n-2)*(n-3)*(n-4)*(n-3)!
+		int leftSum = 2*(n-3);
+		for(int i=n-2;i>=2;i--)
+			leftSum *= i;
+		int midSum = (n-2)*(n-3)*(n-4);
+		for(int i=n-3;i>=2;i--)
+			midSum *= i;
+		return leftSum+midSum;
+    }
+	
+	/**
+	 * 卡塔兰数的常规表达式:C2n/n/n+1
+	 * f(0)=1,f(1)=1,f(2)=2,f(3)=5
+	 * f(n)=f(0)*f(n-1)+f(1)*f(n-1)+f(2)*f(n-3).....+f(n-1)*f(0)
+	 */
+	public static int countLegalWays(int n) {
+		if(n == 1)
+			return 1;
+		int sum = 1;
+		for(int i=2*n;i>=n+1;i--)
+			sum *= i;
+		for(int i=n;i>=2;i--)
+			sum /= i;
+		sum /= (n+1);
+		return sum;
+    }
+	
+	/**
+	 * 给定一个二叉树的根结点root，请依次返回二叉树的先序，中序和后续遍历(二维数组的形式)。
+	 */
+	public static int[][] convert(TreeNode root) {
+        ArrayList<Integer> list = new ArrayList<>();
+        preHelperII(root, list);
+        int[][] res = new int[3][list.size()];
+        for(int i=0;i<list.size();i++)
+        	res[0][i] = list.get(i);
+        list.clear();
+        inHelperII(root, list);
+        for(int i=0;i<list.size();i++)
+        	res[1][i] = list.get(i);
+        list.clear();
+        postHelperII(root, list);
+        for(int i=0;i<list.size();i++)
+        	res[2][i] = list.get(i);
+		return res;
+    }
+	
+	//前序遍历，中左右
+	private static void preHelper(TreeNode root,ArrayList<Integer> res){
+		if(root == null)
+			return;
+		res.add(root.val);
+		preHelper(root.left, res);
+		preHelper(root.right, res);
+	}
+	
+	//中序遍历，左中右
+	private static void inHelper(TreeNode root,ArrayList<Integer> res){
+		if(root == null)
+			return;
+		inHelper(root.left, res);
+		res.add(root.val);
+		inHelper(root.right, res);
+	}
+	
+	//后序遍历，左右中
+	private static void postHelper(TreeNode root,ArrayList<Integer> res){
+		if(root == null)
+			return;
+		postHelper(root.left, res);
+		postHelper(root.right, res);
+		res.add(root.val);
+	}
+	
+	//前序遍历非递归,一个栈模拟
+	private static void preHelperII(TreeNode root,ArrayList<Integer> res){
+		Stack<TreeNode> stack = new Stack<>();
+		stack.push(root);
+		while(!stack.isEmpty()){
+			TreeNode cur = stack.pop();
+			res.add(cur.val);
+			if(cur.right != null)
+				stack.push(cur.right);
+			if(cur.left != null)
+				stack.push(cur.left);
+		}
+	}
+	
+	//中序遍历非递归，一个栈模拟
+	private static void inHelperII(TreeNode root,ArrayList<Integer> res){
+		Stack<TreeNode> stack = new Stack<>();
+		stack.push(root);
+		TreeNode cur = stack.peek();
+		while(!stack.isEmpty()){
+			//当所有的左节点先压入栈中
+			while(cur != null&&cur.left != null){
+				stack.push(cur.left);
+				cur = cur.left;
+			}
+			TreeNode node = stack.pop();
+			res.add(node.val);
+			cur = node.right;
+			if(cur != null)
+				stack.push(cur);
+		}
+	}
+	
+	//后序遍历非递归，两个栈模拟
+	private static void postHelperII(TreeNode root,ArrayList<Integer> res){
+		Stack<TreeNode> stack1 = new Stack<>();
+		Stack<TreeNode> stack2 = new Stack<>();
+		stack1.push(root);
+		while(!stack1.isEmpty()){
+			TreeNode cur = stack1.pop();
+			stack2.push(cur);
+			if(cur.left != null)
+				stack1.push(cur.left);
+			if(cur.right != null)
+				stack1.push(cur.right);
+		}
+		while(!stack2.isEmpty())
+			res.add(stack2.pop().val);
+	}
+	
+	//dp[i][j]表示用前0...i种前，总金额为j能组成的可能性
+	public static int countWays(int[] penny, int n, int aim) {
+		int[][] dp = new int[n][aim+1];
+		for(int i=0;i<n;i++)
+			dp[i][0] = 1;
+		for(int j=1;j<=aim;j++){
+			if(j%penny[0]==0)
+				dp[0][j] = 1;
+		}
+		for(int i=1;i<n;i++){
+			for(int j=1;j<=aim;j++){
+				for(int k=0;k<=j/penny[i];k++){
+					dp[i][j] = dp[i][j]+dp[i-1][j-k*penny[i]];
+				}
+			}
+		}
+		for(int i=0;i<n;i++){
+			for(int j=0;j<=aim;j++)
+				System.out.print(dp[i][j]+" ");
+			System.out.println();
+		}
+		return dp[n-1][aim];
+    }
+	
+	//最长递增子序列
+	//dp[i]表示前i个的最长递增子序列,dp[i]
+	public static int getLIS(int[] A, int n) {
+		int[] dp = new int[n];
+		int max = 0;
+		Arrays.fill(dp, 1);
+		for(int i=1;i<n;i++){
+			for(int j=0;j<i;j++){
+				if(A[j]<A[i]){
+					dp[i] = Math.max(dp[j]+1, dp[i]);
+					max = Math.max(max, dp[i]);
+				}
+			}
+		}
+		for(int i=0;i<n;i++)
+			System.out.print(dp[i]+" ");
+		System.out.println();
+		return max;
+    }
+	
 	public static void main(String[] args) {
-		HashMap<Integer, Integer> map = new HashMap<>();
-		map.put(0, 10);
-		map.put(1, 11);
-		System.out.println(map.get(1));
+		int[] A = new int[]{395,132,276,31,612,103,209,105,214,541,454,87,600,385,345,393,45,154,70,101,468,496,253,181,162,605,425,588,74,261,155,58,549,378,535,217,213,35,564,204,193,301,78,470,140,566,315,162,471,80,451,208,402,80,224,375,279,567,272,39,495,622,256,396,452,141,344,586,310,506,348,481,388,599,412,105,75,338,71,149,19,317,23,8,592,452,624,395,412,12,303,207,491,466,238,94,538,478,163,624,308,271,18,417,209,83,18,113,169,521,539,242,36,180,429,360,203,164,580,198,98,119,157,249,609,93,323,592,105,573,243,132,25,208,505,141,454,83,199,279,464,96,285,239,24,299,484,562,410,285,421,280,63,288,502,503,55,615,395,115,560,218,165,224,536,556,201,573,167,248,541,539,35,112,56,326,138,362,91,14,531,539,291,497,570,171,615,318,586,354,462,31,199,297,589,86,257,618,591,59,532,199,302,195,587,51,87,504,62,403,513,33,86,166,576,51,201,254,343,422,388,604,305,511,388,403,564,534,466,423,42,92,146,435,613,92,239,455,614,332,176,218,60,432,584,205,323,170,320}; 
+		System.out.println(getLIS(A, A.length));
 	}
 	 
 }
