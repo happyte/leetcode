@@ -11,6 +11,7 @@ import java.util.Stack;
 
 import dataStructure.ListNode;
 import dataStructure.TreeNode;
+import sun.tools.jar.resources.jar;
 
 //牛客网BAT算法练习
 public class Main {
@@ -639,9 +640,72 @@ public class Main {
 		return max;
     }
 	
+	/**
+	 * 给定两个字符串A和B，返回两个字符串的最长公共子序列的长度
+	 */
+	public static int findLCS(String A, int n, String B, int m) {
+		int[][] dp = new int[n][m];
+		int j = 0;
+		for(;j<m;j++){
+			if(A.charAt(0) == B.charAt(j)){
+				dp[0][j] = 1;
+				break;
+			}
+		}
+		for(int k = j+1;k<m;k++)
+			dp[0][k] = 1;
+		int i = 0;
+		for(;i<n;i++){
+			if(A.charAt(i) == B.charAt(0)){
+				dp[i][0] = 1;
+				break;
+			}
+		}
+		for(int k=i+1;k<n;k++)
+			dp[k][0] = 1;
+		for(i=1;i<n;i++){
+			for(j=1;j<m;j++){
+				if(A.charAt(i) == B.charAt(j))
+					dp[i][j] = Math.max(dp[i-1][j-1]+1,Math.max(dp[i-1][j], dp[i][j-1]));
+				else
+					dp[i][j] = Math.max(dp[i-1][j], dp[i][j-1]);
+			}
+		}
+		return dp[n-1][m-1];
+    }
+	
+	/**
+	 * 背包问题	给定物品的重量w价值v及物品数n和承重cap
+	 * dp[i][j]表示选前i件商品，承重为j的条件下的最大利润
+	 */
+	public static int maxValue(int[] w, int[] v, int n, int cap) {
+		int[][] dp = new int[n][cap+1];
+		for(int j=0;j<=cap;j++){
+			if(j>=w[0]){
+				dp[0][j] = v[0];
+			}
+		}
+		//不选第i件商品，dp[i-1][j]。选第i件商品,dp[i-1][j-w[i]]+v[i]
+		for(int i=1;i<n;i++){
+			for(int j=0;j<=cap;j++){
+				if(j>=w[i])
+					dp[i][j] = Math.max(dp[i-1][j], dp[i-1][j-w[i]]+v[i]);
+			}
+		}
+		for(int i=0;i<n;i++){
+			for(int j=0;j<=cap;j++)
+				System.out.print(dp[i][j]+" ");
+			System.out.println();
+		}
+		return dp[n-1][cap];
+    }
+	
+	//小红书／搜狐招聘
 	public static void main(String[] args) {
-		int[] A = new int[]{395,132,276,31,612,103,209,105,214,541,454,87,600,385,345,393,45,154,70,101,468,496,253,181,162,605,425,588,74,261,155,58,549,378,535,217,213,35,564,204,193,301,78,470,140,566,315,162,471,80,451,208,402,80,224,375,279,567,272,39,495,622,256,396,452,141,344,586,310,506,348,481,388,599,412,105,75,338,71,149,19,317,23,8,592,452,624,395,412,12,303,207,491,466,238,94,538,478,163,624,308,271,18,417,209,83,18,113,169,521,539,242,36,180,429,360,203,164,580,198,98,119,157,249,609,93,323,592,105,573,243,132,25,208,505,141,454,83,199,279,464,96,285,239,24,299,484,562,410,285,421,280,63,288,502,503,55,615,395,115,560,218,165,224,536,556,201,573,167,248,541,539,35,112,56,326,138,362,91,14,531,539,291,497,570,171,615,318,586,354,462,31,199,297,589,86,257,618,591,59,532,199,302,195,587,51,87,504,62,403,513,33,86,166,576,51,201,254,343,422,388,604,305,511,388,403,564,534,466,423,42,92,146,435,613,92,239,455,614,332,176,218,60,432,584,205,323,170,320}; 
-		System.out.println(getLIS(A, A.length));
+		int[] w = new int[]{1,2,3};
+		int[] v = new int[]{1,2,3};
+		System.out.println(maxValue(w, v, 3, 6));
+		
 	}
 	 
 }
