@@ -1,6 +1,7 @@
 package toutiao;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Scanner;
 
 
@@ -89,13 +90,17 @@ public class Main {
 		return cur;
 	}
 	
+	private static void printInfo(int num){
+		System.out.println(Integer.toBinaryString(num));
+	}
+	
 	//10000000000000000 5555555555555555
 	public static void main(String[] args) {
-		Scanner scanner = new Scanner(System.in);
-		int n = scanner.nextInt();
-		int[] num = new int[n];
-		for(int i=0;i<n;i++)
-			num[i] = scanner.nextInt();
-		System.out.println(kecheng(num));
+		int number = -8;
+		//原始数二进制
+		printInfo(number);
+		printInfo(number<<2);
+		printInfo(number>>2);
+		printInfo(number>>>2);
 	}
 }

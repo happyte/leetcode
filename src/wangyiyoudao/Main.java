@@ -317,17 +317,6 @@ public class Main {
 	}
 	
 	/**
-	 * 有 n 个学生站成一排，每个学生有一个能力值，牛牛想从这 n 个学生中按照顺序选取 k 名学生，
-	 * 要求相邻两个学生的位置编号的差不超过 d，使得这 k 个学生的能力值的乘积最大，你能返回最大的乘积吗？
-	 * 3
-	   7 4 7
-	   2 50
-	 */
-	public static int hechangtuan(int[] num,int k,int d){
-		return 0;
-	}
-	
-	/**
 	 * 每个输入包含 1 个测试用例。每个测试用例的第 i 行，表示完成第 i 件料理需要哪些材料，
 	 * 各个材料用空格隔开，输入只包含大写英文字母和空格，输入文件不超过 50 行，每一行不超过 50 个字符。
 	 * BUTTER FLOUR
@@ -368,31 +357,9 @@ public class Main {
 		return 0;
 	}
 	
-	public static String cangbaotu(String s,String t){
-		char[] sStr = s.toCharArray();
-		HashMap<Character, Integer> map = new HashMap<>();
-		for(int i=0;i<sStr.length;i++){
-			if(map.containsKey(sStr[i]))
-				map.put(sStr[i], map.get(sStr[i])+1);
-			else
-				map.put(sStr[i], 1);
-		}
-		char[] tStr = t.toCharArray();
-		for(int i=0;i<tStr.length;i++){
-			if(!map.containsKey(tStr[i]))
-				return "No";
-			else {
-				int count = map.get(tStr[i]);
-				if(--count >= 0){
-					map.put(tStr[i], count);
-				}
-				else
-					return "No";
-			}
-		}
-		return "Yes";
-	}
-	
+	/**
+	 * 藏宝图，字符串1中是否包含字符串2，不要求连续
+	 */
 	//求str1,str2的最长公共子串，不要求连续
 	public static String isContain(String str1,String str2){  
 		int M = str1.length();
@@ -433,15 +400,48 @@ public class Main {
         return "No";
     }  
 	
+	/**
+	 * 有 n 个学生站成一排，每个学生有一个能力值，牛牛想从这 n 个学生中按照顺序选取 k 名学生，
+	 * 要求相邻两个学生的位置编号的差不超过 d，使得这 k 个学生的能力值的乘积最大，你能返回最大的乘积吗？
+	 * 3
+	   7 4 7
+	   2 50
+	 */
+	public static long hechangtuan(int[] num,int k,int d){
+		int n = num.length-1;
+		//dp0[i][j]代表选中第i个数，一共选了j个数字的最大成绩
+		//dp1[i][j]代表选中第i个数，一共选了j个数字的最小成绩
+		//num下标从1开始
+		long[][] dp0 = new long[n+1][k+1];
+		long[][] dp1 = new long[n+1][k+1];
+		long max = 0;
+		for(int i=1;i<=n;i++){
+			dp0[i][1] = num[i];
+			dp1[i][1] = num[i];
+			for(int j=2;j<=k;j++){
+				for(int m=Math.max(1, i-d);m<i;m++){
+					dp0[i][j] = Math.max(dp0[i][j], Math.max(num[i]*dp0[m][j-1], num[i]*dp1[m][j-1]));
+					dp1[i][j] = Math.min(dp1[i][j], Math.min(num[i]*dp1[m][j-1], num[i]*dp0[m][j-1]));
+				}
+			}
+			max = Math.max(max, dp0[i][k]);
+			System.out.println("max:"+max);
+		}
+		return max;
+	}
+	
 	//oxoxoxox
 	//ooxxoo
 	public static void main(String[] args) {
-		System.out.println(isContain("ukaovhzydz", "u"));
-//		Scanner scanner = new Scanner(System.in);
-//		while(scanner.hasNext()){
-//			String s = scanner.nextLine();
-//			String t = scanner.nextLine();
-//			System.out.println(cangbaotu(s, t));
-//		}
+		Scanner scanner = new Scanner(System.in);
+		while(scanner.hasNext()){
+			int n = scanner.nextInt();
+			int[] num = new int[n+1];
+			for(int i=1;i<=n;i++)
+				num[i] = scanner.nextInt();
+			int k = scanner.nextInt();
+			int d = scanner.nextInt();
+			System.out.println(hechangtuan(num, k, d));
+		}
 	}
 }

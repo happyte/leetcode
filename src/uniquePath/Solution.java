@@ -28,6 +28,6 @@ public class Solution {
 	}
 	
 	public static void main(String[] args) {
-		System.out.println(uniquePaths2(3, 7));
+		System.out.println(uniquePaths2(2, 2));
 	}
 }

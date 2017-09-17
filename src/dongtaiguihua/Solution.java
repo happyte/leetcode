@@ -60,7 +60,7 @@ public class Solution {
 	//dp[i][j]=dp[i][j]+dp[i-1][j-k*coins[i]]
 	//第一列dp[i][0]=1, 代表不花钱也是一种方案
 	private static int combination(int n){
-		int[] coins = new int[]{1,5,10,20,50};
+		int[] coins = new int[]{3,4,7};
 		int[][] dp = new int[coins.length][n+1];
 		//对第一列进行填充
 		for(int i=0;i<coins.length;i++)
@@ -77,6 +77,11 @@ public class Solution {
 					dp[i][j] = dp[i][j]+dp[i-1][j-k*coins[i]];
 				}
 			}
+		}
+		for(int i=0;i<coins.length;i++){
+			for(int j=0;j<=n;j++)
+				System.out.print(dp[i][j]+" ");
+			System.out.println();
 		}
 		return dp[coins.length-1][n];
 	}
@@ -210,7 +215,7 @@ public class Solution {
 			dp[0][k] = 1;
 		//dp[i][j]=max{dp[i-1][j],dp[i][j-1],dp[i-1][j-1]+1}
 		//第一种情况 str1=A1BC2  str2=AB34C  dp[3][4]=ABC,dp[4][4]=dp[3][4]
-		//第二种情况 str1=ABCD1  str2=ABCD2  dp[4][3]=ABCD,dp[4][4]=dp[4][]
+		//第二种情况 str1=ABCD1  str2=ABCD2  dp[4][3]=ABCD,dp[4][4]=dp[4][3]
 		//第三种情况 str1[i]=str2[j],dp[i][j]=dp[i-1][j-1]最多只能加1
 		for(i=1;i<M;i++){
 			for(j=1;j<N;j++){
@@ -333,6 +338,6 @@ public class Solution {
     }
 	
 	public static void main(String[] args) {
-		System.out.println(minDistance("ab", ""));
+		System.out.println(combination(33));
 	}
 }

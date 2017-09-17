@@ -1,6 +1,7 @@
 package wangYi;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Scanner;
 
 public class Solution {
@@ -55,6 +56,37 @@ public class Solution {
 				count++;
 		}
 		return 4*count;
+	}
+	
+	public static int tiaoshiban(int N,int M){
+		int[] dp = new int[M+1];
+		Arrays.fill(dp, 65536);
+		dp[N] = 0;
+		for(int i=N;i<=M;i++){
+			ArrayList<Integer> res = yueshu(i);
+			for(int j=0;j<res.size();j++){
+				int m = res.get(j);
+				if(i+m>M)
+					continue;
+				dp[i+m] = Math.min(dp[i]+1, dp[i+m]);
+			}
+		}
+		for(int i=0;i<=M;i++)
+			System.out.print(dp[i]+" ");
+		System.out.println();
+		return dp[M];
+	}
+	
+	private static ArrayList<Integer> yueshu(int K){
+		ArrayList<Integer> res = new ArrayList<>();
+		for(int i=2;i<=Math.sqrt(K);i++){
+			if(K%i==0){
+				res.add(i);
+				if(K/i != i)
+					res.add(K/i);
+			}
+		}
+		return res;
 	}
 	
 	//暗黑字符串
@@ -120,6 +152,6 @@ public class Solution {
 	}
 	
 	public static void main(String[] args) {
-		
+		System.out.println(tiaoshiban(4, 24));
 	}
 }
