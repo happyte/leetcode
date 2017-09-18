@@ -459,6 +459,14 @@ SPFA 在形式上和BFS非常类似，不同的是BFS中一个点出了队列就
 
 
 54.ApplicationContext和BeanFactory
+BeanFacotry是spring中比较原始的Factory。如XMLBeanFactory就是一种典型的BeanFactory。
+原始的BeanFactory无法支持spring的许多插件，如AOP功能、Web应用等。ApplicationContext接口,它由BeanFactory接口派生而来，
+因而提供BeanFactory所有的功能。ApplicationContext以一种更向面向框架的方式工作以及对上下文进行分层和实现继承
+ApplicationContext包还提供了以下的功能：
+  • MessageSource, 提供国际化的消息访问  
+  • 资源访问，如URL和文件  
+  • 事件传播  
+  • 载入多个（有继承关系）上下文 ，使得每一个上下文都专注于一个特定的层次，比如应用的web层  
 
 
 55.CPU调度进程算法
