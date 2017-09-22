@@ -453,6 +453,8 @@ SPFA 在形式上和BFS非常类似，不同的是BFS中一个点出了队列就
 
 
 52.HashTable和HashMap的区别，除了同步问题
+1).快速失败机制
+2).键值是否允许为空
 
 
 53.并发包的计算器
@@ -478,3 +480,113 @@ CPU分配给队首进程，让其执行一个时间片，长度从几ms到几百
 
 
 56.voltaile和static一起使用
+
+美团面试
+
+57.有哪些容器，并继承哪些接口,安全性,Collection接口有哪些方法
+List,Set,Queue都是继承Collection接口的，HashMap相关的都是继承Map接口，Collection接口又是继承Iterable接口,
+所以Collection的子类都可以使用迭代器的方式遍历
+Collection接口中的方法:1.添加 add addAll 2.删除	clear remove removeAll	3.查看 size 4.判断 isEmpty contains containsAll 5.迭代 toArray iterator()
+ArrayList和LinkedList的使用场景 
+1.需要对快速插入、删除，应该使用LinkedList
+2.需要快速随机访问元素，使用ArrayList
+3.HashSet的方法跟Collection接口中的方法是一定，没有指定位置插入元素的方法
+
+58.IO流和NIO流的区别和使用场景，字节流和字符流的区别
+IO是面向流的，每次都只能读取一个或者多个字节，直到读取完所有字节，并没有放到缓冲区中
+NIO是面向缓冲区的，数据是读取到稍后处理的一个缓冲区中，缓冲区可以向前向后移动，因此增加了灵活性。
+需要检查缓冲区是否包含所要处理的信息，多数据进入缓冲区时，不要覆盖原有未处理的数据。
+
+IO是阻塞的，当调用read()或者write()函数，线程是被阻塞的，直到一些数据被完全写入或者读出
+NIO是非阻塞的，当一个线程从某一通道读取数据时，但它仅能得到当前可用的数据，如果当前数据不可用，就不会什么都获取，当前线程不会阻塞
+
+IO读取数据例子
+InputStream input = ... ; // get the InputStream from the client socket
+BufferedReader reader = new BufferedReader(new InputStreamReader(input));
+String nameLine   = reader.readLine();
+String ageLine    = reader.readLine();
+String emailLine  = reader.readLine();
+String phoneLine  = reader.readLine();
+
+NIO读取数据例子
+ByteBuffer buffer = ByteBuffer.allocate(48);
+int bytesRead = inChannel.read(buffer);
+while(! bufferFull(bytesRead) ) {
+	bytesRead = inChannel.read(buffer);
+}
+
+
+
+59.反射能否调用一个类的私有方法,用过哪些反射方法
+Method method = cls.getDeclaredMethod("privateMethod", null);
+method.setAccessible(true);
+  • 得到要调用类的class			
+  • 得到要调用的类中的方法(Method)
+  • 方法调用(invoke)
+  
+static方法的反射调用	
+static方法调用时，不必得到对象示例，如下：
+Class cls = Class.forName("chb.test.reflect.Student");  
+Method staticMethod = cls.getDeclaredMethod("hi",int.class,String.class);  
+staticMethod.invoke(cls,20,"chb");//这里不需要newInstance 
+
+private的成员变量赋值
+如果直接通过反射给类的private成员变量赋值，是不允许的，这时我们可以通过setAccessible方法解决
+
+
+60.Spring,SpringMVC有哪些注解
+@Repository		持久层，即DAO组件
+@Service		业务层,通常定义的service层就是这个
+@Controller 	控制层,如struts中的action
+@Component		泛指组件，当组件不好归类的时候，可以使用这个注解进行标注
+
+@Resource和@Autowired的区别	@Autowired是byType自动注入的，@Resource是byName自动注入的
+
+
+61.Resource和Component注解有哪些区别
+
+
+62.ArrayList和LinkedList的使用场景
+
+
+63.类的加载机制
+
+
+64.JVM内存模型哪些内存会溢出，怎么知道有没有内存溢出
+JVM中除了程序计数器，其它地区都会发生内存溢出
+-Xms 堆最小容量(heap min size)
+-Xmx 堆最大容量(heap max size)
+-Xss 栈容量(stack size)
+-XX:PermSize=size 永生代最小容量
+-XX:MaxPermSize=size 永生代最大容量
+
+堆溢出
+堆是存放对象的地方，那么只要在堆中疯狂的创建对象，那么堆就会发生内存溢出
+解决堆溢出方法:
+用visualVM工具分析堆快照
+step1:找出泄漏的对象
+step2:找到泄漏对象的GC Root
+step3:根据泄漏对象和GC Root找到导致内存泄漏的代码
+step4:想法设法解除泄漏对象与GCRoot的连接
+
+栈溢出
+调用方法的时候，会在栈中入栈一个栈帧，如果当前栈的容量不足，就会发生栈溢出StackOverFlowError
+那么只要疯狂的调用方法，并且有意的不让栈帧出栈就可以导致栈溢出了。
+
+运行时常量池溢出
+这里储存的是一些常量、字面量。如果运行时常量池内存不足，就会发生内存溢出。
+从jdk1.7开始，运行时常量池移动到了堆中，所以如果堆的内存不足，也会导致运行时常量池内存溢出。
+
+方法区溢出
+方法区是存放类的信息，而且很难被gc，只要加载了大量类，就有可能引起方法区溢出
+这里将不做演示了，想试试的可以用cglib创建大量的代理类
+
+65.OSI 7层模型
+应用层
+表示层
+会话层
+传输层
+网络层
+数据链路层
+物理层
+
